@@ -1,0 +1,33 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewData["Title"] = "ListStations";
+}
+
+<h1>ListStations</h1>
+<table class="table table-bordered table-striped table-dark">
+    <thead>
+        <tr>
+            <th>
+                StationCode
+            </th>
+            <th>
+                StationName
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow dr in Model.Rows)
+        {
+            <tr>
+                <td>
+                    @dr["stacioncode"].ToString()
+                </td>
+                <td>
+                    @dr["stationname"].ToString()
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
