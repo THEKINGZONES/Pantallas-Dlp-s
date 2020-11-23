@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Model;
 
 namespace DA
 {
-   public class Yue
+    public class Yue
     {
         SqlConexion _sqlConexion;
         public Yue()
@@ -19,14 +20,31 @@ namespace DA
             return result;
         }
 
+        public YueGroupStation GetGroupStation(string GroupStation)
+        {
+            var query = GetReport(enumYueReport.GETGROUP);
+            query = query.Replace("@GroupStation",string.Format("'{0}'",GroupStation));
+            var Dr = _sqlConexion.GetDataRow(query);
+            var result = new YueGroupStation()
+            {
+                Code = GroupStation,
+                Name = Dr["Name"].ToString(),
+                Meta = Convert.ToInt32(Dr["Meta"]),
+                Stations = Dr["Stations"].ToString()
+            };
+
+
+            return result;
+        }
     }
     public enum enumYueReport
     {
-        R06, 
+        R06,
         R05,
-            DLPSPANTALLAS_JUAN
-
-
-
+        P04,
+        GETSHIFT,
+        GETGROUP
     }
+
+
 }

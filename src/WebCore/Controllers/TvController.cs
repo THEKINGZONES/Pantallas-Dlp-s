@@ -10,10 +10,13 @@ namespace WebCore.Controllers
     public class TvController : Controller
     {
         TvBusiness _tvBusiness;
+        YueBusiness _yueBusiness;
         public TvController()
         {
             _tvBusiness = new TvBusiness();
+            _yueBusiness = new YueBusiness();
         }
+
         public IActionResult Index()
         {
             return View();
@@ -26,13 +29,14 @@ namespace WebCore.Controllers
         {
             return View(_tvBusiness.ListStations());
         }
-        public IActionResult HrxHr()
+        public IActionResult HrxHr(string yuegp)
         {
-            var BeginDay = new DateTime(2020, 11, 15);
-            var EndDay = new DateTime(2020, 11, 16);
+            var BeginDay = DateTime.Now;
+            var EndDay = DateTime.Today;
+            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
 
-            return View(_tvBusiness.HrxHr(8015,BeginDay,EndDay));
+            return View(_tvBusiness.HrxHr(yuegp, BeginDay,EndDay));
         }
-
+     
     }
 }

@@ -1,0 +1,38 @@
+﻿@model System.Data.DataTable
+@{
+    ViewData["Title"] = "JobsXHr";
+}
+
+<h1>JobsXHr</h1>
+<table class="table table-bordered table-striped table-dark">
+    <thead>
+        <tr>
+            <th>
+                datein
+            </th>
+            <th>
+                total
+            </th>
+            <th>
+                HOUR_TIMEIN
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow dr in Model.Rows)
+        {
+            <tr>
+                <td>
+                    @dr["DATEIN"].ToString()
+                </td>
+                <td>
+                    @dr["TOTAL"].ToString()
+                </td>
+                <td>
+                    @dr["HOUR_TIMEIN"].ToString()
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -8,11 +8,14 @@ namespace Business
     {
         DA.ConexionIBM _Conexion;
         DA.Yue _YueConexion;
+        DA.SqlConexion _Sql;
         public TvBusiness()
         {
             _Conexion = new DA.ConexionIBM("Eco2");
             _YueConexion = new DA.Yue();
+            _Sql = new DA.SqlConexion("TrayTrack", true);
         }
+
         
         public DataTable brkDlps()
         {
@@ -26,18 +29,22 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
         }
-        public DataTable HrxHr(int stationcode,DateTime BeginDay, DateTime EndDay)
+        public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
         {
-            var query = _YueConexion.GetReport(DA.enumYueReport.DLPSPANTALLAS_JUAN);
-            query = query.Replace("@stationcode", stationcode.ToString());
-            query = query.Replace("@BeginDay", string.Format("'{0}'", BeginDay.ToString("MM-dd-yyyy")));
-            query = query.Replace("@EndDay", string.Format("'{0}'", EndDay.ToString("MM-dd-yyyy")));
+            var queryShift = _YueConexion.GetReport(DA.enumYueReport.GETSHIFT);
+            var resultShift = _Sql.GetDataRow(queryShift);
+            var YueStations = _YueConexion.GetGroupStation(GroupStation);
+
+            var query = _YueConexion.GetReport(DA.enumYueReport.P04);
+            query = query.Replace("@Stations", YueStations.GetListString);
+            query = query.Replace("@BEGINDAY", string.Format("'{0} {1}'", BeginDay.ToString("yyyy-MM-dd"), resultShift["ShiftStart"].ToString()));
+            query = query.Replace("@ENDDAY", string.Format("'{0} {1}'", EndDay.ToString("yyyy-MM-dd"), resultShift["ShiftEnd"].ToString()));
+
+
 
             var result = _Conexion.GetDataTable(query);
             return result;
         }
-
-
     }
 
 }

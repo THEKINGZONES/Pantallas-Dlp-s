@@ -1,38 +1,121 @@
 ﻿@model System.Data.DataTable
 @{
+    Layout = "_LayoutTv";
     ViewData["Title"] = "HrxHr";
+    var MinHr = 0;
+    var MaxHr = 0;
+    Int32.TryParse(Model.Compute("Min(hrs)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(hrs)", "").ToString(), out MaxHr);    
+    Double Resultado = 0;
+    var Semaforo = "";
+    var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
+
+
 }
 
-<h1>HrxHr</h1>
-<table class="table table-bordered table-striped table-dark">
+
+<h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+<table class="table table-bordered table-dark">
     <thead>
         <tr>
             <th>
-                datein
+                Estaciones
             </th>
+            <th>
+
+            </th>
+            @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+            {
+                <th>
+                    @Hr
+                </th>
+            }
             <th>
                 total
             </th>
             <th>
-                HOUR_TIMEIN
+                CPK
             </th>
             
         </tr>
     </thead>
     <tbody>
-        @foreach (System.Data.DataRow dr in Model.Rows)
-        {
-            <tr>
-                <td>
-                    @dr["DATEIN"].ToString()
-                </td>
-                <td>
-                    @dr["TOTAL"].ToString()
-                </td>
-                <td>
-                    @dr["HOUR_TIMEIN"].ToString() 
-                </td>
-            </tr>
-        }
+    @foreach (var StationCode in GroupStation.GetToList)
+    {
+        var Total = 0;
+        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
+        <tr>
+
+            <td rowspan="3">
+
+                @StationCode
+
+            </td>
+            <td>
+                Qty
+            </td>
+            @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+            {
+                var Qty = 0;
+                Int32.TryParse(Model.Compute("Sum(COUNT)",string.Format("s_code={0} AND Hrs = {1}", StationCode,Hr)).ToString(), out Qty);
+                Resultado = Qty / GroupStation.Meta * 100.0;
+                if (Resultado < 90)
+                {
+                    Semaforo = "StatusRed";
+                }
+                else if(Resultado>=90 & Resultado < 100)
+                {
+                    Semaforo = "StatusYellow";
+
+                }
+                else
+                {
+                    Semaforo = "StatusGreen";
+                }
+
+
+
+
+                <th class="@Semaforo">
+                    @Qty.ToString("N0")
+                </th>
+            }
+            <th>
+                @Total.ToString("N0")
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Bad
+            </td>            
+        </tr>
+        <tr>
+            <td>
+                Good
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
+<style>
+    .StatusRed, .StatusYellow, .StatusGreen {
+        font-weight: bold;
+        color: white;
+    }
+
+    .StatusRed {
+        background-color: red;
+    }
+
+    .StatusYellow {
+        background-color: goldenrod;
+    }
+
+    .StatusGreen {
+        background-color: green;
+    }
+
+    .StatusZero {
+        color: white;
+    }
+</style>
