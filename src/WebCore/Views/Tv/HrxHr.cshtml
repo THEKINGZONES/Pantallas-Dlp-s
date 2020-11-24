@@ -38,62 +38,63 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var StationCode in GroupStation.GetToList)
-    {
-        var Total = 0;
-        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
-        <tr>
-            
+        @for(int StationCode= GroupStation.GetToList[1]; StationCode<= GroupStation.GetToList[5]; StationCode++)
 
-            <td rowspan="3" style="width:150px">
+        {
+            var Total = 0;
+            Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
+            <tr>
 
-                @StationCode
 
-            </td>
-            <td style="width:80px">
-                Qty
-            </td>
-            @for (int Hr = MinHr; Hr < MaxHr; Hr++)
-            {
-                var Qty = 0;
-                Int32.TryParse(Model.Compute("Sum(COUNT)",string.Format("s_code={0} AND Hrs = {1}", StationCode,Hr)).ToString(), out Qty);
-                Resultado = Qty / GroupStation.Meta * 100.0;
-                if (Resultado < 90)
+                <td rowspan="3" style="width:150px">
+
+                    @StationCode
+
+                </td>
+                <td style="width:80px">
+                    Qty
+                </td>
+                @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                 {
-                    Semaforo = "StatusRed";
+                    var Qty = 0;
+                    Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
+                    Resultado = Qty / GroupStation.Meta * 100.0;
+                    if (Resultado < 90)
+                    {
+                        Semaforo = "StatusRed";
+                    }
+                    else if (Resultado >= 90 & Resultado < 100)
+                    {
+                        Semaforo = "StatusYellow";
+
+                    }
+                    else
+                    {
+                        Semaforo = "StatusGreen";
+                    }
+
+
+
+
+                    <th class="@Semaforo" style="text-align:center;font-size:large">
+                        @Qty.ToString("N0")
+                    </th>
                 }
-                else if(Resultado>=90 & Resultado < 100)
-                {
-                    Semaforo = "StatusYellow";
-
-                }
-                else
-                {
-                    Semaforo = "StatusGreen";
-                }
-
-
-
-
-                <th class="@Semaforo" style="text-align:center;font-size:large">
-                    @Qty.ToString("N0")
+                <th>
+                    @Total.ToString("N0")
                 </th>
-            }
-            <th>
-                @Total.ToString("N0")
-            </th>
-        </tr>
-        <tr>
-            <td style="height:1px;font-size:xx-small; padding:5px">
-                Bad
-            </td>            
-        </tr>
-        <tr>
-            <td style="height:1px;font-size:xx-small; padding:5px">
-                Good
-            </td>
-        </tr>
-    }
+            </tr>
+            <tr>
+                <td style="height:1px;font-size:xx-small; padding:5px">
+                    Bad
+                </td>
+            </tr>
+            <tr>
+                <td style="height:1px;font-size:xx-small; padding:5px">
+                    Good
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <style>
