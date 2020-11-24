@@ -9,13 +9,11 @@
     Double Resultado = 0;
     var Semaforo = "";
     var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
-
+    MaxHr++;
 
 }
-
-
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
-<table class="table table-bordered table-dark">
+<table class="table table-bordered font-weight-bold">
     <thead>
         <tr>
             <th>
@@ -26,7 +24,7 @@
             </th>
             @for (int Hr = MinHr; Hr < MaxHr; Hr++)
             {
-                <th>
+                <th style="text-align:center;text-size-adjust:250%">
                     @Hr
                 </th>
             }
@@ -45,13 +43,14 @@
         var Total = 0;
         Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
         <tr>
+            
 
-            <td rowspan="3">
+            <td rowspan="3" style="width:150px">
 
                 @StationCode
 
             </td>
-            <td>
+            <td style="width:80px">
                 Qty
             </td>
             @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -76,7 +75,7 @@
 
 
 
-                <th class="@Semaforo">
+                <th class="@Semaforo" style="text-align:center;font-size:large">
                     @Qty.ToString("N0")
                 </th>
             }
@@ -85,12 +84,12 @@
             </th>
         </tr>
         <tr>
-            <td>
+            <td style="height:1px;font-size:xx-small; padding:5px">
                 Bad
             </td>            
         </tr>
         <tr>
-            <td>
+            <td style="height:1px;font-size:xx-small; padding:5px">
                 Good
             </td>
         </tr>
