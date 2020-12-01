@@ -5,14 +5,33 @@
     var MinHr = 0;
     var MaxHr = 0;
     Int32.TryParse(Model.Compute("Min(hrs)", "").ToString(), out MinHr);
-    Int32.TryParse(Model.Compute("Max(hrs)", "").ToString(), out MaxHr);    
+    Int32.TryParse(Model.Compute("Max(hrs)", "").ToString(), out MaxHr);
     Double Resultado = 0;
+
     var Semaforo = "";
     var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
     MaxHr++;
+    int Begin = 0;
+    int End = 4;
+    Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
+    Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
+    var AuditTotal = ViewBag.SAudit as System.Data.DataTable;
+    var Bad = ViewBag.Bad as System.Data.DataTable;
+    if (Begin > GroupStation.GetToList.Count)
+    {
+        Begin = GroupStation.GetToList.Count - 5;
+
+    }
+    if (End > GroupStation.GetToList.Count)
+    {
+        End = GroupStation.GetToList.Count - 1;
+
+    }
 
 }
+
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+
 <table class="table table-bordered font-weight-bold">
     <thead>
         <tr>
@@ -34,66 +53,112 @@
             <th>
                 CPK
             </th>
-            
+
         </tr>
     </thead>
+
     <tbody>
-        @for(int StationCode= GroupStation.GetToList[1]; StationCode<= GroupStation.GetToList[5]; StationCode++)
+        @for (int index = Begin; index <= End; index++)
+
+
 
         {
+            var StationCode = GroupStation.GetToList[index];
             var Total = 0;
             Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
-            <tr>
+
+            if (Total > 0)
+            {
+                var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
+                <tr>
 
 
-                <td rowspan="3" style="width:150px">
+                    <td rowspan="3" style="width:150px">
 
-                    @StationCode
+                        @StationName
 
-                </td>
-                <td style="width:80px">
-                    Qty
-                </td>
-                @for (int Hr = MinHr; Hr < MaxHr; Hr++)
-                {
-                    var Qty = 0;
-                    Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
-                    Resultado = Qty / GroupStation.Meta * 100.0;
-                    if (Resultado < 90)
+                    </td>
+                    <td style="width:80px">
+                        Qty
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
-                        Semaforo = "StatusRed";
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+                        if (Resultado < 90)
+                        {
+                            Semaforo = "StatusRed";
+                        }
+                        else if (Resultado >= 90 & Resultado < 100)
+                        {
+                            Semaforo = "StatusYellow";
+
+                        }
+                        else
+                        {
+                            Semaforo = "StatusGreen";
+                        }
+
+
+
+
+                        <th class="@Semaforo" style="text-align:center;font-size:large">
+                            @Qty.ToString("N0")
+                        </th>
                     }
-                    else if (Resultado >= 90 & Resultado < 100)
-                    {
-                        Semaforo = "StatusYellow";
-
-                    }
-                    else
-                    {
-                        Semaforo = "StatusGreen";
-                    }
-
-
-
-
-                    <th class="@Semaforo" style="text-align:center;font-size:large">
-                        @Qty.ToString("N0")
+                    <th>
+                        @Total.ToString("N0")
                     </th>
-                }
-                <th>
-                    @Total.ToString("N0")
-                </th>
-            </tr>
-            <tr>
-                <td style="height:1px;font-size:xx-small; padding:5px">
-                    Bad
-                </td>
-            </tr>
-            <tr>
-                <td style="height:1px;font-size:xx-small; padding:5px">
-                    Good
-                </td>
-            </tr>
+                </tr>
+
+
+                <tr>
+                    <td style="height:1px;font-size:xx-small; padding:5px">
+                        Bad
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var CBad = 0;
+                        Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                        if (CBad >= 1)
+                        {
+                            Semaforo = "StatusRed";
+                        }
+                        else
+                        {
+                            Semaforo = "";
+                        }
+
+                        <td class="@Semaforo" style="height:1px;font-size:xx-small; padding:5px; text-align:center">
+                            @CBad.ToString("N0")
+                        </td>
+                    }
+
+                </tr>
+
+                <tr>
+                    <td style="height:1px;font-size:xx-small; padding:5px">
+                        Good
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var CBad = 0;
+                        var TotalAudit = 0;
+                        Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                        Int32.TryParse(AuditTotal.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out TotalAudit);
+
+
+                        <td style="height:1px;font-size:xx-small; padding:5px; text-align:center">
+                            @((TotalAudit-CBad).ToString("N0"))
+                        </td>
+                    }
+
+                </tr>
+
+            }
+
+
         }
     </tbody>
 </table>

@@ -20,22 +20,37 @@ namespace WebCore.Controllers
         public IActionResult Index()
         {
             return View();
-        }
-        public IActionResult brkDlps()
+        }    
+        public IActionResult BadRequest()
         {
-            return View(_tvBusiness.brkDlps());
-        }
-        public IActionResult ListStations()
-        {
-            return View(_tvBusiness.ListStations());
-        }
-        public IActionResult HrxHr(string yuegp)
-        {
-            var BeginDay = DateTime.Now;
-            var EndDay = DateTime.Today;
-            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
 
-            return View(_tvBusiness.HrxHr(yuegp, BeginDay,EndDay));
+            return View();
+        }
+        public IActionResult HrxHr(string yuegp,int begin,int end)
+        {
+            var BeginDay = DateTime.Now.AddDays(-4);
+            var EndDay = DateTime.Today.AddDays(-4);
+            ViewBag.SAudit = _yueBusiness.GetStationsInStations("SA01", yuegp);
+            ViewBag.Bad = _yueBusiness.GetStationsInStations("SBRK04", yuegp);
+
+            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
+            if (begin <= 0)
+                begin = 1;
+
+            ViewBag.DisplayBegin = begin - 1;
+            if (end <= 0)
+                end = 5;
+            ViewBag.DisplayEnd = end-1;
+            var result = _tvBusiness.HrxHr(yuegp, BeginDay, EndDay);
+            if(result != null)
+            {
+                return View(result);
+            }
+            else
+            {
+                return RedirectToAction("BadRequest");
+            }
+            
         }
      
     }

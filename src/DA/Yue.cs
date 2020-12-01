@@ -43,7 +43,9 @@ namespace DA
         R05,
         P04,
         GETSHIFT,
-        GETGROUP
+        GETGROUP,
+        STATIONSINSTATIONS
+
     }
 
 
