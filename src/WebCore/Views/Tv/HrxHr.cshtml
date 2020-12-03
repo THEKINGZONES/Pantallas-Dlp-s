@@ -7,7 +7,6 @@
     Int32.TryParse(Model.Compute("Min(hrs)", "").ToString(), out MinHr);
     Int32.TryParse(Model.Compute("Max(hrs)", "").ToString(), out MaxHr);
     Double Resultado = 0;
-
     var Semaforo = "";
     var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
     MaxHr++;
@@ -83,8 +82,8 @@
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
-                        var Qty = 0;
-                        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
+                        var Qty = 0;                        
+                        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);                        
                         Resultado = Qty / GroupStation.Meta * 100.0;
                         if (Resultado < 90)
                         {
@@ -114,7 +113,7 @@
 
 
                 <tr>
-                    <td style="height:1px;font-size:xx-small; padding:5px">
+                    <td style="height:1px;font-size:x-small; padding:5px">
                         Bad
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -130,7 +129,7 @@
                             Semaforo = "";
                         }
 
-                        <td class="@Semaforo" style="height:1px;font-size:xx-small; padding:5px; text-align:center">
+                        <td class="@Semaforo" style="height:1px;font-size:x-small; padding:5px; text-align:center">
                             @CBad.ToString("N0")
                         </td>
                     }
@@ -138,7 +137,7 @@
                 </tr>
 
                 <tr>
-                    <td style="height:1px;font-size:xx-small; padding:5px">
+                    <td style="height:1px;font-size:x-small; padding:5px">
                         Good
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -147,9 +146,16 @@
                         var TotalAudit = 0;
                         Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
                         Int32.TryParse(AuditTotal.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out TotalAudit);
+                        if (TotalAudit >= 1 && CBad <= 0)
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        else
+                        {
+                            Semaforo = "";
+                        }
 
-
-                        <td style="height:1px;font-size:xx-small; padding:5px; text-align:center">
+                        <td class="@Semaforo" style="height:1px;font-size:x-small; padding:5px; text-align:center">
                             @((TotalAudit-CBad).ToString("N0"))
                         </td>
                     }
@@ -163,6 +169,15 @@
     </tbody>
 </table>
 <style>
+    .StatusFontRed{
+        font-weight: bold;
+        color: red
+    }
+    .StatusFontGreen {
+        font-weight: bold;
+        color: green
+    }
+
     .StatusRed, .StatusYellow, .StatusGreen {
         font-weight: bold;
         color: white;
@@ -182,5 +197,5 @@
 
     .StatusZero {
         color: white;
-    }
+    }    
 </style>

@@ -28,8 +28,8 @@ namespace WebCore.Controllers
         }
         public IActionResult HrxHr(string yuegp,int begin,int end)
         {
-            var BeginDay = DateTime.Now.AddDays(-4);
-            var EndDay = DateTime.Today.AddDays(-4);
+            var BeginDay = DateTime.Now;
+            var EndDay = DateTime.Today;
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("SA01", yuegp);
             ViewBag.Bad = _yueBusiness.GetStationsInStations("SBRK04", yuegp);
 
