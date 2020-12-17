@@ -63,12 +63,18 @@
 
         {
             var StationCode = GroupStation.GetToList[index];
-            var Total = 0;
-            Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
+            var Total = 0.0F;
+            var Tbad = 0.0F;
+            var Cpk = 0.0F;
+
             
+            float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
+            float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0}", StationCode)).ToString(), out Tbad);
+
             if (Total > 0)
             {
                 var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
+                Cpk = ((Total - Tbad) / (Total)) * 100.00F;
                 <tr>
 
 
@@ -87,16 +93,16 @@
                         Resultado = Qty / GroupStation.Meta * 100.0;
                         if (Resultado < 90)
                         {
-                            Semaforo = "StatusRed";
+                            Semaforo = "StatusFontRed";
                         }
                         else if (Resultado >= 90 & Resultado < 100)
                         {
-                            Semaforo = "StatusYellow";
+                            Semaforo = "StatusFontYellow";
 
                         }
                         else
                         {
-                            Semaforo = "StatusGreen";
+                            Semaforo = "StatusFontGreen";
                         }
                         
 
@@ -108,7 +114,10 @@
                     }
                     <th style="text-align:center;font-size:70px">
                         @Total.ToString("N0")
-                    </th>                 
+                    </th>  
+                    <th>
+                        @Cpk.ToString("N0")
+                    </th>
 
                 </tr>
 
@@ -185,11 +194,15 @@
         font-weight: bold; 
         color:red;
     }
+    .StatusFontYellow {
+        font-weight: bold;
+        color: yellow;
+    }
     .StatusFontGreen {
         font-weight: bold;
         color: green;
         
-    }
+    }   
 
     .StatusRed, .StatusYellow, .StatusGreen {
         font-weight: bold;
