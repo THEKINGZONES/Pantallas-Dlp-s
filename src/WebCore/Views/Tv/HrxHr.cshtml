@@ -39,13 +39,13 @@
             </th>
             <th>
 
-            </th>
+            </th>            
             @for (int Hr = MinHr; Hr < MaxHr; Hr++)
             {
                 <th style="text-align:center;text-size-adjust:250%">
                     @Hr
                 </th>
-            }
+            }            
             <th>
                 total
             </th>
@@ -78,7 +78,7 @@
                 <tr>
 
 
-                    <td rowspan="3" style="width:150px;font-size:45px">
+                    <td  style="width:150px;font-size:45px">
 
                         @StationName
 
@@ -91,11 +91,11 @@
                         var Qty = 0;
                         Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
                         Resultado = Qty / GroupStation.Meta * 100.0;
-                        if (Resultado < 90)
+                        if (Resultado < 85)
                         {
                             Semaforo = "StatusFontRed";
                         }
-                        else if (Resultado >= 90 & Resultado < 100)
+                        else if (Resultado >= 85 & Resultado < 100)
                         {
                             Semaforo = "StatusFontYellow";
 
@@ -119,69 +119,9 @@
                         @Cpk.ToString("N0")
                     </th>
 
-                </tr>
+                </tr>               
 
-
-                <tr>
-                    <td style="height:1px;font-size:x-small; padding:5px">
-                        Bad
-                    </td>
-                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
-                    {
-                        var CBad = 0;
-                        if (Bad != null)
-                        {
-                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                        }
-                        if (CBad >= 1)
-                        {
-                            Semaforo = "StatusRed";
-                        }
-                        else
-                        {
-                            Semaforo = "";
-                        }
-
-                        <td class="@Semaforo" style="height:1px;font-size:x-small; padding:5px; text-align:center">
-                            @CBad.ToString("N0")
-                        </td>
-                    }
-
-                </tr>
-
-                <tr>
-                    <td style="height:1px;font-size:x-small; padding:5px">
-                        Good
-                    </td>
-                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
-                    {
-                        var CBad = 0;
-                        var TotalAudit = 0;
-                        if (Bad != null)
-                        {
-                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                        }
-                        if (AuditTotal != null)
-                        {
-                            Int32.TryParse(AuditTotal.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out TotalAudit);
-                        }
-                        if (TotalAudit >= 1 && CBad <= 0)
-                        {
-                            Semaforo = "StatusFontGreen";
-                        }
-                        else
-                        {
-                            Semaforo = "";
-                        }
-
-                        <td  style="height:1px;font-size:x-small; padding:5px; text-align:center">
-                            <label class="@Semaforo">
-                                @((TotalAudit).ToString("N0"))
-                            </label>                           
-                        </td>
-                    }
-
-                </tr>
+               
 
             }
 
@@ -196,7 +136,7 @@
     }
     .StatusFontYellow {
         font-weight: bold;
-        color: yellow;
+        color: goldenrod;
     }
     .StatusFontGreen {
         font-weight: bold;
