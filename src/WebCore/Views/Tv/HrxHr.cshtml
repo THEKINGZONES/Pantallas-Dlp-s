@@ -67,7 +67,7 @@
             var Tbad = 0.0F;
             var Cpk = 0.0F;
 
-            
+
             float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
             float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0}", StationCode)).ToString(), out Tbad);
 
@@ -78,7 +78,7 @@
                 <tr>
 
 
-                    <td  style="width:150px;font-size:45px">
+                    <td rowspan="3" style="width:150px;font-size:45px">
 
                         @StationName
 
@@ -104,7 +104,7 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        
+
 
 
 
@@ -114,14 +114,75 @@
                     }
                     <th style="text-align:center;font-size:70px">
                         @Total.ToString("N0")
-                    </th>  
+                    </th>
                     <th>
                         @Cpk.ToString("N0")
                     </th>
 
-                </tr>               
+                </tr>
 
-               
+
+
+                <tr>
+                    <td style="height:1px;font-size:x-small; padding:5px">
+                        Bad
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var CBad = 0;
+                        if (Bad != null)
+                        {
+                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                        }
+                        if (CBad >= 1)
+                        {
+                            Semaforo = "StatusRed";
+                        }
+                        else
+                        {
+                            Semaforo = "";
+                        }
+
+                        <td class="@Semaforo" style="height:1px;font-size:x-small; padding:5px; text-align:center">
+                            @CBad.ToString("N0")
+                        </td>
+                    }
+
+                </tr>
+
+                <tr>
+                    <td style="height:1px;font-size:x-small; padding:5px">
+                        Good
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var CBad = 0;
+                        var TotalAudit = 0;
+                        if (Bad != null)
+                        {
+                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                        }
+                        if (AuditTotal != null)
+                        {
+                            Int32.TryParse(AuditTotal.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out TotalAudit);
+                        }
+                        if (TotalAudit >= 1 && CBad <= 0)
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        else
+                        {
+                            Semaforo = "";
+                        }
+
+                        <td style="height:1px;font-size:x-small; padding:5px; text-align:center">
+                            <label class="@Semaforo">
+                                @((TotalAudit).ToString("N0"))
+                            </label>
+                        </td>
+                    }
+
+                </tr>
 
             }
 
