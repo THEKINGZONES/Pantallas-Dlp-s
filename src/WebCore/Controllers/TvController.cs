@@ -26,13 +26,13 @@ namespace WebCore.Controllers
 
             return View();
         }
-        public IActionResult HrxHr(string yuegp,int begin,int end)
+        public IActionResult HrxHr(string yuegp,string Brk ,int begin,int end)
         {
             var BeginDay = DateTime.Now;
             var EndDay = DateTime.Today;
             
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("SA01", yuegp);
-            ViewBag.Bad = _yueBusiness.GetStationsInStations("SBRK04", yuegp);
+            ViewBag.Bad = _yueBusiness.GetStationsInStations(Brk, yuegp);
 
             ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
             if (begin <= 0)
