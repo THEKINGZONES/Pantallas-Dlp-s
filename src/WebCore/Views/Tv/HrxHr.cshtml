@@ -50,7 +50,7 @@
                 total
             </th>
             <th>
-                CPK
+                FPY
             </th>
 
         </tr>
@@ -65,16 +65,18 @@
             var StationCode = GroupStation.GetToList[index];
             var Total = 0.0F;
             var Tbad = 0.0F;
-            var Cpk = 0.0F;
+            var Fpy = 0.0F;
 
 
             float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
-            float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0}", StationCode)).ToString(), out Tbad);
-
+            if (Bad != null)
+            {
+                float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsA >= {1}", StationCode,MinHr)).ToString(), out Tbad);
+            }
             if (Total > 0)
             {
                 var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
-                Cpk = ((Total - Tbad) / (Total)) * 100.00F;
+                Fpy = ((Total - Tbad) / (Total)) * 100.0F;
                 <tr>
 
 
@@ -91,7 +93,7 @@
                         var Qty = 0;
                         Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
                         Resultado = Qty / GroupStation.Meta * 100.0;
-                        if (Resultado < 85)
+                        if (Resultado < 80)
                         {
                             Semaforo = "StatusFontRed";
                         }
@@ -115,8 +117,8 @@
                     <th style="text-align:center;font-size:70px">
                         @Total.ToString("N0")
                     </th>
-                    <th>
-                        @Cpk.ToString("N0")
+                    <th style="font-size:40px">
+                        @Fpy.ToString("N1")
                     </th>
 
                 </tr>
