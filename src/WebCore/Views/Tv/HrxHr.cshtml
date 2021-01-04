@@ -15,7 +15,7 @@
     Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
     Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
     var AuditTotal = ViewBag.SAudit as System.Data.DataTable;
-    var Bad = ViewBag.Bad as System.Data.DataTable;
+    var Bad = ViewBag.Bad as System.Data.DataTable;    
     if (Begin > GroupStation.GetToList.Count)
     {
         Begin = GroupStation.GetToList.Count - 5;
@@ -26,7 +26,7 @@
         End = GroupStation.GetToList.Count - 1;
 
     }
-    
+
 }
 
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
@@ -71,7 +71,7 @@
             float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
             if (Bad != null)
             {
-                float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsA >= {1}", StationCode,MinHr)).ToString(), out Tbad);
+                float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}",StationCode,MinHr)).ToString(), out Tbad);
             }
             if (Total > 0)
             {
@@ -87,13 +87,13 @@
                     </td>
                     <td style="width:80px">
                         Qty
-                    </td>
+                    </td>                    
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
                         var Qty = 0;
                         Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
-                        Resultado = Qty / GroupStation.Meta * 100.0;
-                        if (Resultado < 80)
+                        Resultado = Qty / GroupStation.Meta * 100.0;                       
+                        if (Resultado < 85 )
                         {
                             Semaforo = "StatusFontRed";
                         }
@@ -117,8 +117,8 @@
                     <th style="text-align:center;font-size:70px">
                         @Total.ToString("N0")
                     </th>
-                    <th style="font-size:40px">
-                        @Fpy.ToString("N1")
+                    <th style="font-size:70px">
+                        @Fpy.ToString("N1")%
                     </th>
 
                 </tr>
@@ -126,15 +126,16 @@
 
 
                 <tr>
-                    <td style="height:1px;font-size:x-small; padding:5px">
+                    <td style="height:1px;font-size:small; padding:5px">
                         Bad
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
-                        var CBad = 0;
+                        var CBad = 0;                        
                         if (Bad != null)
                         {
-                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+
+                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);                            
                         }
                         if (CBad >= 1)
                         {
@@ -145,7 +146,7 @@
                             Semaforo = "";
                         }
 
-                        <td class="@Semaforo" style="height:1px;font-size:x-small; padding:5px; text-align:center">
+                        <td class="@Semaforo" style="height:1px;font-size:small; padding:5px; text-align:center">
                             @CBad.ToString("N0")
                         </td>
                     }
@@ -153,7 +154,7 @@
                 </tr>
 
                 <tr>
-                    <td style="height:1px;font-size:x-small; padding:5px">
+                    <td style="height:1px;font-size:small; padding:5px">
                         Good
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -177,7 +178,7 @@
                             Semaforo = "";
                         }
 
-                        <td style="height:1px;font-size:x-small; padding:5px; text-align:center">
+                        <td style="height:1px;font-size:small; padding:5px; text-align:center">
                             <label class="@Semaforo">
                                 @((TotalAudit).ToString("N0"))
                             </label>
@@ -203,9 +204,12 @@
     }
     .StatusFontGreen {
         font-weight: bold;
-        color: green;
-        
+        color: green;        
     }   
+    StatusFontBlack{
+        font-weight: bold;
+        color:black;
+    }
 
     .StatusRed, .StatusYellow, .StatusGreen {
         font-weight: bold;

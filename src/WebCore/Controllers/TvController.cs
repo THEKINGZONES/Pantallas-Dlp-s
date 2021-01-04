@@ -32,7 +32,7 @@ namespace WebCore.Controllers
             var EndDay = DateTime.Today;
             
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("SA01", yuegp);
-            ViewBag.Bad = _yueBusiness.GetStationsInStations(Brk, yuegp);
+            ViewBag.Bad = _yueBusiness.GetStationsInStations(Brk, yuegp);           
 
             ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
             if (begin <= 0)

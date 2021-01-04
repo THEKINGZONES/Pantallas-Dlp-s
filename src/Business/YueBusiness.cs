@@ -35,6 +35,6 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
 
-        }
+        }      
     }
 }

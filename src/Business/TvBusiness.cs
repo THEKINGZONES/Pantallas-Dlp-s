@@ -28,7 +28,7 @@ namespace Business
             var query = _YueConexion.GetReport(DA.enumYueReport.R05);
             var result = _Conexion.GetDataTable(query);
             return result;
-        }
+        }      
         public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
         {
             var queryShift = _YueConexion.GetReport(DA.enumYueReport.GETSHIFT);
@@ -44,7 +44,7 @@ namespace Business
 
             var result = _Conexion.GetDataTable(query);
             return result;
-        }
+        }        
     }
 
 }
