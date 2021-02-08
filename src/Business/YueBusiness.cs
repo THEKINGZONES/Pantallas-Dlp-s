@@ -25,7 +25,7 @@ namespace Business
 
         public DataTable GetStationsInStations(string BeginStation,string EndStation)
         {
-            var GrupA = _YueConexion.GetGroupStation(BeginStation);        
+            var GrupA = _YueConexion.GetGroupStation(BeginStation);
 
             var query = _YueConexion.GetReport(DA.enumYueReport.STATIONSINSTATIONS);
             query = query.Replace("@StationsA", GrupA.GetListString);
@@ -35,6 +35,6 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
 
-        }      
+        }
     }
 }

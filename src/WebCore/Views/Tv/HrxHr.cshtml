@@ -15,7 +15,8 @@
     Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
     Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
     var AuditTotal = ViewBag.SAudit as System.Data.DataTable;
-    var Bad = ViewBag.Bad as System.Data.DataTable;    
+    var Bad = ViewBag.Bad as System.Data.DataTable;
+    var Rework = ViewBag.Rework as System.Data.DataTable;
     if (Begin > GroupStation.GetToList.Count)
     {
         Begin = GroupStation.GetToList.Count - 5;
@@ -64,6 +65,7 @@
         {
             var StationCode = GroupStation.GetToList[index];
             var Total = 0.0F;
+            var TRework = 0.0f;
             var Tbad = 0.0F;
             var Fpy = 0.0F;
 
@@ -72,6 +74,8 @@
             if (Bad != null)
             {
                 float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}",StationCode,MinHr)).ToString(), out Tbad);
+                float.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode,MinHr)).ToString(), out TRework);
+                Tbad = Tbad + TRework;
             }
             if (Total > 0)
             {
@@ -131,12 +135,15 @@
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
-                        var CBad = 0;                        
+                        var CBad = 0;
+                        var CRework = 0;
                         if (Bad != null)
                         {
 
-                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);                            
+                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);                            
                         }
+                        CBad = CBad + CRework;
                         if (CBad >= 1)
                         {
                             Semaforo = "StatusRed";
