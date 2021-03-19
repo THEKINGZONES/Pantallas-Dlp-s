@@ -8,29 +8,16 @@ namespace Business
     {
         DA.ConexionIBM _Conexion;
         DA.Yue _YueConexion;
-        DA.SqlConexion _Sql;
+        DA.SqlConexion _Sql;        
         public TvBusiness()
         {
             _Conexion = new DA.ConexionIBM("Eco2");
             _YueConexion = new DA.Yue();
-            _Sql = new DA.SqlConexion("TrayTrack", true);
-        }
-
-        
-        public DataTable brkDlps()
+            _Sql = new DA.SqlConexion("TrayTrack", true);            
+        }       
+public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
         {
-            string query = "SELECT LIMIT 5 * FROM TRAY ";
-            var result = _Conexion.GetDataTable(query);
-            return result;
-        }
-        public DataTable ListStations()
-        {
-            var query = _YueConexion.GetReport(DA.enumYueReport.R05);
-            var result = _Conexion.GetDataTable(query);
-            return result;
-        }      
-        public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
-        {
+            
             var queryShift = _YueConexion.GetReport(DA.enumYueReport.GETSHIFT);
             var resultShift = _Sql.GetDataRow(queryShift);
             var YueStations = _YueConexion.GetGroupStation(GroupStation);

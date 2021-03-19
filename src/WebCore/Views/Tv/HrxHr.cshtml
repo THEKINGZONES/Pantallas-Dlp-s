@@ -84,7 +84,7 @@
                 <tr>
 
 
-                    <td rowspan="3" style="width:150px;font-size:45px">
+                    <td rowspan="3" style="width:250px;font-size:40px">
 
                         @StationName
 
@@ -114,14 +114,14 @@
 
 
 
-                        <th class="@Semaforo" style="text-align:center;font-size:70px">
+                        <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:70px">
+                    <th style="text-align:center;font-size:60px;width:150px">
                         @Total.ToString("N0")
                     </th>
-                    <th style="font-size:70px">
+                    <th style="font-size:60px;width:150px">
                         @Fpy.ToString("N1")%
                     </th>
 
@@ -130,7 +130,7 @@
 
 
                 <tr>
-                    <td style="height:1px;font-size:small; padding:5px">
+                    <td style="height:1px;font-size:20px; padding:5px">
                         Bad
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -141,19 +141,28 @@
                         {
 
                             Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);                            
+                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
                         }
                         CBad = CBad + CRework;
                         if (CBad >= 1)
                         {
-                            Semaforo = "StatusRed";
+
+                            if(CBad >1)
+                            {
+                                Semaforo = "StatusRed";
+                            }
+                            else
+                            {
+                                Semaforo = "StatusYellow";
+                            }
                         }
                         else
                         {
                             Semaforo = "";
                         }
+                  
 
-                        <td class="@Semaforo" style="height:1px;font-size:small; padding:5px; text-align:center">
+                        <td class="@Semaforo" style="height:1px;font-size:20px; padding:5px; text-align:center">
                             @CBad.ToString("N0")
                         </td>
                     }
@@ -161,7 +170,7 @@
                 </tr>
 
                 <tr>
-                    <td style="height:1px;font-size:small; padding:5px">
+                    <td style="height:1px;font-size:20px; padding:5px">
                         Good
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
@@ -185,7 +194,7 @@
                             Semaforo = "";
                         }
 
-                        <td style="height:1px;font-size:small; padding:5px; text-align:center">
+                        <td style="height:1px;font-size:20px; padding:5px; text-align:center">
                             <label class="@Semaforo">
                                 @((TotalAudit).ToString("N0"))
                             </label>
