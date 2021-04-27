@@ -74,7 +74,10 @@
             if (Bad != null)
             {
                 float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}",StationCode,MinHr)).ToString(), out Tbad);
-                float.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode,MinHr)).ToString(), out TRework);
+                if (Rework != null)
+                {
+                    float.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode, MinHr)).ToString(), out TRework);
+                }
                 Tbad = Tbad + TRework;
             }
             if (Total > 0)
@@ -141,9 +144,13 @@
                         {
 
                             Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
+                            if (Rework != null)
+                            {
+                                Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
+                            }
+                            CBad = CBad + CRework;
                         }
-                        CBad = CBad + CRework;
+                        
                         if (CBad >= 1)
                         {
 
@@ -160,7 +167,7 @@
                         {
                             Semaforo = "";
                         }
-                  
+
 
                         <td class="@Semaforo" style="height:1px;font-size:20px; padding:5px; text-align:center">
                             @CBad.ToString("N0")
