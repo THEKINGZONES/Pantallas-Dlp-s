@@ -8,13 +8,24 @@ namespace Business
     {
         DA.ConexionIBM _Conexion;
         DA.Yue _YueConexion;
-        DA.SqlConexion _Sql;        
+        DA.SqlConexion _Sql;
+        DA.SqlConexion _Decide;
         public TvBusiness()
         {
             _Conexion = new DA.ConexionIBM("Eco2");
             _YueConexion = new DA.Yue();
-            _Sql = new DA.SqlConexion("TrayTrack", true);            
+            _Sql = new DA.SqlConexion("TrayTrack", true);
+            _Decide = new DA.SqlConexion("ECO2_Log", true);
         }       
+
+
+        public DataTable DefectsDecide()
+        {
+            var query = _YueConexion.GetReport(DA.enumYueReport.R_18);
+            var result = _Decide.GetDataTable(query);
+            return result;
+
+        }
 public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
         {
             

@@ -21,16 +21,18 @@ namespace WebCore.Controllers
         {
             return View();
         }    
-        public IActionResult BadRequest()
+        public IActionResult Defects()
         {
-
-            return View();
+            var result = _tvBusiness.DefectsDecide();    
+            return View(result);
         }
         public IActionResult HrxHr(string yuegp,string Brk,string Rw ,int begin,int end)
         {
             var BeginDay = DateTime.Now;
-            var EndDay = DateTime.Today;           
+            var EndDay = DateTime.Today;
             
+
+            ViewBag.Defects = _yueBusiness.YueHrxhrDecide(yuegp);            
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("S_07", yuegp);
             ViewBag.Rework = _yueBusiness.GetStationsInStations(Rw, yuegp);
             ViewBag.Bad = _yueBusiness.GetStationsInStations(Brk, yuegp);

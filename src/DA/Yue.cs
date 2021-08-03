@@ -44,7 +44,11 @@ namespace DA
         P04,
         GETSHIFT,
         GETGROUP,
-        STATIONSINSTATIONS
+        STATIONSINSTATIONS,
+        R_18,
+        REPORTTEST,
+        HRXHRDECIDE
+
 
     }
 

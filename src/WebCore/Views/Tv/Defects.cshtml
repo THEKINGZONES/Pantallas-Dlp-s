@@ -1,0 +1,89 @@
+﻿@model System.Data.DataTable
+@{
+    ViewBag.Title = "HrxHr";
+    Layout = "_LayoutTv";
+    ViewData["Title"] = "DefectsDecide";
+   
+
+}
+<h1>Defects</h1>
+
+
+<table class="table table-bordered font-weight-bold">
+
+    <thead>
+        <tr>
+           
+            @foreach (var fColumn in Model.Columns)
+            {
+              <th>@fColumn.ToString().ToUpper()</th>    
+                            
+
+            }
+        </tr>
+    </thead>
+    <tbody>
+        
+            @for (int r = 0; r < Model.Rows.Count; r++)
+            {
+                <tr>
+                    @for (int c = 0; c < Model.Columns.Count; c++)
+                     {
+                        
+
+                        <td>
+
+                            @Model.Rows[r][c]
+
+                        </td>                      
+
+                     }
+
+                </tr>
+            }
+        
+    </tbody>
+</table>
+<style>
+    .StatusFontRed {
+        font-weight: bold;
+        color: red;
+    }
+
+    .StatusFontYellow {
+        font-weight: bold;
+        color: goldenrod;
+    }
+
+    .StatusFontGreen {
+        font-weight: bold;
+        color: green;
+    }
+
+    StatusFontBlack {
+        font-weight: bold;
+        color: black;
+    }
+
+    .StatusRed, .StatusYellow, .StatusGreen {
+        font-weight: bold;
+        color: white;
+    }
+
+    .StatusRed {
+        background-color: red;
+    }
+
+    .StatusYellow {
+        background-color: goldenrod;
+    }
+
+    .StatusGreen {
+        background-color: green;
+    }
+
+    .StatusZero {
+        color: white;
+    }
+</style>
+

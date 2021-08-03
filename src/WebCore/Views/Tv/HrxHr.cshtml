@@ -1,4 +1,5 @@
 ﻿@model System.Data.DataTable
+@using System.Linq
 @{
     Layout = "_LayoutTv";
     ViewData["Title"] = "HrxHr";
@@ -17,6 +18,9 @@
     var AuditTotal = ViewBag.SAudit as System.Data.DataTable;
     var Bad = ViewBag.Bad as System.Data.DataTable;
     var Rework = ViewBag.Rework as System.Data.DataTable;
+    var Defects = ViewBag.Defects as System.Data.DataTable;
+    
+
     if (Begin > GroupStation.GetToList.Count)
     {
         Begin = GroupStation.GetToList.Count - 5;
@@ -29,6 +33,7 @@
     }
 
 }
+
 
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
 
@@ -59,27 +64,46 @@
 
     <tbody>
         @for (int index = Begin; index <= End; index++)
-
-
-
         {
             var StationCode = GroupStation.GetToList[index];
             var Total = 0.0F;
-            var TRework = 0.0f;
+            var TRework = 0.0F;
             var Tbad = 0.0F;
+            var TDefects = 0.0F;
             var Fpy = 0.0F;
+
 
 
             float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
             if (Bad != null)
             {
-                float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}",StationCode,MinHr)).ToString(), out Tbad);
-                if (Rework != null)
-                {
-                    float.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode, MinHr)).ToString(), out TRework);
-                }
-                Tbad = Tbad + TRework;
+                float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode, MinHr)).ToString(), out Tbad);
             }
+            else Tbad = 0;
+
+            if (Rework != null)
+            {
+
+                float.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode, MinHr)).ToString(), out TRework);
+
+            }
+            else TRework = 0;
+
+            if (Defects != null)
+            {
+
+                //float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} AND OrbitHr >= {1}", StationCode, MinHr)).ToString(), out TDefects);
+                float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr >= {1} and OrbitHr <= {2}"+" OR PraCode={0} and PraHr >= {1} and PraHr <= {2}" +
+                                "OR DlpCode={0} and DlpHr >= {1} and DlpHr <= {2}", StationCode, MinHr,MaxHr)).ToString(), out TDefects);
+            }
+            else TDefects = 0;
+
+            if (Bad != null || Rework!= null || Defects != null)
+            {
+                Tbad = Tbad + TRework + TDefects;
+            }
+
+
             if (Total > 0)
             {
                 var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
@@ -138,19 +162,33 @@
                     </td>
                     @for (int Hr = MinHr; Hr < MaxHr; Hr++)
                     {
+
                         var CBad = 0;
                         var CRework = 0;
+                        var CDefects = 0;
                         if (Bad != null)
                         {
 
                             Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                            if (Rework != null)
-                            {
-                                Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
-                            }
-                            CBad = CBad + CRework;
                         }
-                        
+                        else CBad = 0;
+                        if (Rework != null)
+                        {
+                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
+                        }
+                        else CRework = 0;
+                        if (Defects != null)
+                        {
+                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} OR PraCode={0} and PraHr = {1}" +
+                                "OR DlpCode={0} and DlpHr = {1}", StationCode, Hr)).ToString(), out CDefects);
+                        }
+                        else TDefects = 0;
+
+                        if (Bad != null || Rework != null || Defects != null)
+                        {
+                            CBad = CBad + CRework + CDefects;
+                        }
+
                         if (CBad >= 1)
                         {
 
@@ -158,7 +196,7 @@
                             {
                                 Semaforo = "StatusRed";
                             }
-                            else
+                            else if(CBad == 1)
                             {
                                 Semaforo = "StatusYellow";
                             }
