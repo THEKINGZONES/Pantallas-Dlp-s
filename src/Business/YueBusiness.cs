@@ -32,6 +32,15 @@ namespace Business
             var result = _ECO2_Log.GetDataTable(query);            
             return result;
         }
+        public DataTable YueHrxhrDecideTrue(string estaciones)
+        {
+            var GrupA = _YueConexion.GetGroupStation(estaciones);
+            var query = _YueConexion.GetReport(DA.enumYueReport.HRXHRDECIDEPASS);
+            query = query.Replace("@Estaciones", GrupA.GetListString);
+            var result = _ECO2_Log.GetDataTable(query);
+            return result;
+        }
+
 
         public DataTable GetStationsInStations(string BeginStation,string EndStation)
         {

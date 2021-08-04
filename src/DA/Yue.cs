@@ -47,7 +47,8 @@ namespace DA
         STATIONSINSTATIONS,
         R_18,
         REPORTTEST,
-        HRXHRDECIDE
+        HRXHRDECIDE,
+            HRXHRDECIDEPASS
 
 
     }

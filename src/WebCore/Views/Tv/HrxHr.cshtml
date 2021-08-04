@@ -19,6 +19,7 @@
     var Bad = ViewBag.Bad as System.Data.DataTable;
     var Rework = ViewBag.Rework as System.Data.DataTable;
     var Defects = ViewBag.Defects as System.Data.DataTable;
+    var Pass = ViewBag.Pass as System.Data.DataTable;
     
 
     if (Begin > GroupStation.GetToList.Count)
@@ -70,7 +71,7 @@
             var TRework = 0.0F;
             var Tbad = 0.0F;
             var TDefects = 0.0F;
-            var Fpy = 0.0F;
+            var Fpy = 0.00;
 
 
 
@@ -90,9 +91,7 @@
             else TRework = 0;
 
             if (Defects != null)
-            {
-
-                //float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} AND OrbitHr >= {1}", StationCode, MinHr)).ToString(), out TDefects);
+            {                
                 float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr >= {1} and OrbitHr <= {2}"+" OR PraCode={0} and PraHr >= {1} and PraHr <= {2}" +
                                 "OR DlpCode={0} and DlpHr >= {1} and DlpHr <= {2}", StationCode, MinHr,MaxHr)).ToString(), out TDefects);
             }
@@ -107,7 +106,7 @@
             if (Total > 0)
             {
                 var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
-                Fpy = ((Total - Tbad) / (Total)) * 100.0F;
+                Fpy = ((Total - Tbad) / (Total)) * 100.0D;
                 <tr>
 
 
@@ -149,7 +148,7 @@
                         @Total.ToString("N0")
                     </th>
                     <th style="font-size:60px;width:150px">
-                        @Fpy.ToString("N1")%
+                        @Fpy.ToString("N2")%
                     </th>
 
                 </tr>
@@ -182,7 +181,7 @@
                             Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} OR PraCode={0} and PraHr = {1}" +
                                 "OR DlpCode={0} and DlpHr = {1}", StationCode, Hr)).ToString(), out CDefects);
                         }
-                        else TDefects = 0;
+                        else CDefects = 0;
 
                         if (Bad != null || Rework != null || Defects != null)
                         {
@@ -222,25 +221,66 @@
                     {
                         var CBad = 0;
                         var TotalAudit = 0;
-                        if (Bad != null)
-                        {
-                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
-                        }
+                        var CPass= 0;
+                        var CRework = 0;
+                        var CDefects = 0;
+
+
                         if (AuditTotal != null)
                         {
                             Int32.TryParse(AuditTotal.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out TotalAudit);
                         }
-                        if (TotalAudit >= 1 && CBad <= 0)
+                        if (Pass != null)
+                        {
+                            Int32.TryParse(Pass.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} OR PraCode={0} and PraHr = {1}" +
+                                "OR DlpCode={0} and DlpHr = {1}", StationCode, Hr)).ToString(), out CPass);
+                        }
+                        if (Bad != null)
+                        {
+                            Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
+                        }
+                        else CBad = 0;
+                        if (Rework != null)
+                        {
+                            Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
+                        }
+                        else CRework = 0;
+                        if (Defects != null)
+                        {
+                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} OR PraCode={0} and PraHr = {1}" +
+                                "OR DlpCode={0} and DlpHr = {1}", StationCode, Hr)).ToString(), out CDefects);
+                        }
+                        else CDefects = 0;
+
+
+                        CBad = CBad + CRework + CDefects;
+                        TotalAudit = TotalAudit + CPass;
+
+                        if (TotalAudit >= 1 && CPass >=1 && CBad <= 0)
+                        {
+                            Semaforo = "StatusGreen";
+                        }
+                        else if(CBad >=1)
                         {
                             Semaforo = "StatusFontGreen";
+                            //Se pone todo el cuadro o amarillo si es igual a 1 o rojo si es mayor que 1 
+                            //if (CBad > 1)
+                            //{
+                            //    Semaforo = "StatusFontRed";
+                            //}
+                            //else if (CBad == 1)
+                            //{
+                            //    Semaforo = "StatusFontYellow";
+                            //}
+
                         }
                         else
                         {
                             Semaforo = "";
                         }
 
-                        <td style="height:1px;font-size:20px; padding:5px; text-align:center">
-                            <label class="@Semaforo">
+                        <td style="height:1px;font-size:20px; padding:5px; text-align:center"class="@Semaforo">
+                            <label>
                                 @((TotalAudit).ToString("N0"))
                             </label>
                         </td>

@@ -30,8 +30,8 @@ namespace WebCore.Controllers
         {
             var BeginDay = DateTime.Now;
             var EndDay = DateTime.Today;
-            
 
+            ViewBag.Pass = _yueBusiness.YueHrxhrDecideTrue(yuegp);
             ViewBag.Defects = _yueBusiness.YueHrxhrDecide(yuegp);            
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("S_07", yuegp);
             ViewBag.Rework = _yueBusiness.GetStationsInStations(Rw, yuegp);
