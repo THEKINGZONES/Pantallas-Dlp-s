@@ -2,9 +2,9 @@
 @{
     Layout = "_LayoutTv";
     ViewData["Title"] = "HrxHr";
-  //var MinHr = 0;
+    var MinHr = 0;
     var MaxHr = 0;
-  //Int32.TryParse(Model.Compute("Min(hr)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Min(hr)", "").ToString(), out MinHr);
     Int32.TryParse(Model.Compute("Max(hr)", "").ToString(), out MaxHr);
     Double Resultado = 0;
     var Semaforo = "";
@@ -12,7 +12,7 @@
     MaxHr++;
     int Begin = 0;
     int End = 4;
-    var MinHr = DateTime.Now.Hour;
+    var HrActual = DateTime.Now.Hour;
     System.Data.DataTable copydata = Model.Copy();
 
 
@@ -40,13 +40,12 @@
 
             <th>
 
-                Estaciones
-            </th>   
-            
+                Estacion
+            </th>               
             <th>
-
+                
             </th>
-            @for (int Hr = MinHr-3; Hr < MaxHr; Hr++)
+            @for (int Hr =HrActual-2; Hr < MaxHr; Hr++)
             {               
                 <th style="text-align:center;text-size-adjust:250%">
                     @Hr
@@ -59,28 +58,27 @@
     </thead>
 
     <tbody>
-     @for (int index = MinHr; index <= End; index++)
-     {
-         var StationCode = GroupStation.GetToList[index];
-         var Total = 0;
-         Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode={0}", StationCode)).ToString(), out Total);
+        @for (int index = 0; index <= End; index++)
+        {
+            var StationCode = GroupStation.GetToList[index];
+            Int32 Total = 0;
+            Int32.TryParse(Model.Compute("sum(total)", string.Format("stationcode = {0} ", StationCode)).ToString(), out Total);
+            if (Total > 0)
+            {
+                var StationName = Model.Select(string.Format("stationcode={0}", StationCode))[0]["stationname"].ToString();                
+                <tr>
+                    <td style="width:250px;font-size:40px">
 
+                        @StationName
 
-         if (Total > 0)
-         {
-             var StationName = Model.Select(string.Format("stationcode = {0}", StationCode))[0]["stationcode"].ToString();         
-
-                <tr>                    
-                    <td rowspan="3" style="width:250px;font-size:40px">                        
-                       @StationName                      
-                    </td>                    
+                    </td>
                     <td style="width:80px">
                         Qty
                     </td>
-                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    @for (int Hr = HrActual-2; Hr < MaxHr; Hr++)
                     {
                         var Qty = 0;
-                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode= {0} AND hr = {1}", StationCode, Hr)).ToString(), out Qty);
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode={0} AND hr = {1}", StationCode, Hr)).ToString(), out Qty);
                         Resultado = Qty / GroupStation.Meta * 100.0;
                         if (Resultado < 85)
                         {
@@ -95,23 +93,28 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
+
+
+
+
                         <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
                             @Qty.ToString("N0")
                         </th>
                     }
                     <th style="text-align:center;font-size:60px;width:150px">
                         @Total.ToString("N0")
-                    </th>                   
+                    </th>                  
 
-                </tr>             
+                </tr>
                               
 
+
             }
-
-
-      }
+        }
     </tbody>
 </table>
+
+
 <style>
     .StatusFontRed {
         font-weight: bold;
