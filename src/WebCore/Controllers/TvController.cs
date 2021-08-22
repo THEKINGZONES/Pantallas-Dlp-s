@@ -57,7 +57,7 @@ namespace WebCore.Controllers
             }
             
         }
-        public IActionResult HrxHrByAr(string yuegp, int begin, int end)
+        public IActionResult HrxHrByAr(string yuegp)
         {
             var BeginDay = DateTime.Now;
             var EndDay = DateTime.Now;
