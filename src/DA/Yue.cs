@@ -48,7 +48,9 @@ namespace DA
         R_18,
         REPORTTEST,
         HRXHRDECIDE,
-            HRXHRDECIDEPASS
+        HRXHRDECIDEPASS,
+        HRXHR,
+        HRXHRAR
 
 
     }

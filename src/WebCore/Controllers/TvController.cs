@@ -30,7 +30,7 @@ namespace WebCore.Controllers
         {
             var BeginDay = DateTime.Now;
             var EndDay = DateTime.Today;
-
+        
             ViewBag.Pass = _yueBusiness.YueHrxhrDecideTrue(yuegp);
             ViewBag.Defects = _yueBusiness.YueHrxhrDecide(yuegp);            
             ViewBag.SAudit = _yueBusiness.GetStationsInStations("S_07", yuegp);
@@ -46,7 +46,7 @@ namespace WebCore.Controllers
             if (end <= 0)
                 end = 5;
             ViewBag.DisplayEnd = end-1;
-            var result = _tvBusiness.HrxHr(yuegp, BeginDay, EndDay);
+            var result = _tvBusiness.HrxHr(yuegp, BeginDay, EndDay);            
             if(result != null)
             {
                 return View(result);
@@ -57,6 +57,25 @@ namespace WebCore.Controllers
             }
             
         }
-     
+        public IActionResult HrxHrByAr(string yuegp)
+        {
+            var BeginDay = DateTime.Now;
+            var EndDay = DateTime.Now;
+
+            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
+            var result = _tvBusiness.HRXHRAR(yuegp);
+
+            if (result != null)
+            {
+                return View(result);
+            }
+            else
+            {
+                return RedirectToAction("BadRequest");
+            }
+            return View(result);
+        }
+
+
     }
 }

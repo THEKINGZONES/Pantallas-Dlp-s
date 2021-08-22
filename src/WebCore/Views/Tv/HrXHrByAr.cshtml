@@ -1,0 +1,156 @@
+﻿@model System.Data.DataTable
+@{
+    Layout = "_LayoutTv";
+    ViewData["Title"] = "HrxHr";
+  //var MinHr = 0;
+    var MaxHr = 0;
+  //Int32.TryParse(Model.Compute("Min(hr)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(hr)", "").ToString(), out MaxHr);
+    Double Resultado = 0;
+    var Semaforo = "";
+    var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
+    MaxHr++;
+    int Begin = 0;
+    int End = 4;
+    var MinHr = DateTime.Now.Hour;
+    System.Data.DataTable copydata = Model.Copy();
+
+
+
+    if (Begin > GroupStation.GetToList.Count)
+    {
+        Begin = GroupStation.GetToList.Count - 5;
+
+    }
+    if (End > GroupStation.GetToList.Count)
+    {
+        End = GroupStation.GetToList.Count - 1;
+
+    }
+
+}
+
+
+<h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+
+<table class="table table-bordered font-weight-bold">
+    <thead>
+
+        <tr>
+
+            <th>
+
+                Estaciones
+            </th>   
+            
+            <th>
+
+            </th>
+            @for (int Hr = MinHr-3; Hr < MaxHr; Hr++)
+            {               
+                <th style="text-align:center;text-size-adjust:250%">
+                    @Hr
+                </th>
+            }
+            <th>
+                Total
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+     @for (int index = MinHr; index <= End; index++)
+     {
+         var StationCode = GroupStation.GetToList[index];
+         var Total = 0;
+         Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode={0}", StationCode)).ToString(), out Total);
+
+
+         if (Total > 0)
+         {
+             var StationName = Model.Select(string.Format("stationcode = {0}", StationCode))[0]["stationcode"].ToString();         
+
+                <tr>                    
+                    <td rowspan="3" style="width:250px;font-size:40px">                        
+                       @StationName                      
+                    </td>                    
+                    <td style="width:80px">
+                        Qty
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode= {0} AND hr = {1}", StationCode, Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+                        if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:60px;width:150px">
+                        @Total.ToString("N0")
+                    </th>                   
+
+                </tr>             
+                              
+
+            }
+
+
+      }
+    </tbody>
+</table>
+<style>
+    .StatusFontRed {
+        font-weight: bold;
+        color: red;
+    }
+
+    .StatusFontYellow {
+        font-weight: bold;
+        color: goldenrod;
+    }
+
+    .StatusFontGreen {
+        font-weight: bold;
+        color: green;
+    }
+
+    StatusFontBlack {
+        font-weight: bold;
+        color: black;
+    }
+
+    .StatusRed, .StatusYellow, .StatusGreen {
+        font-weight: bold;
+        color: white;
+    }
+
+    .StatusRed {
+        background-color: red;
+    }
+
+    .StatusYellow {
+        background-color: goldenrod;
+    }
+
+    .StatusGreen {
+        background-color: green;
+    }
+
+    .StatusZero {
+        color: white;
+    }
+</style>
