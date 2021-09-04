@@ -12,8 +12,10 @@
     MaxHr++;
     int Begin = 0;
     int End = 4;
+    Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
+    Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
     var HrActual = DateTime.Now.Hour;
-    System.Data.DataTable copydata = Model.Copy();
+   
 
 
 
@@ -58,7 +60,7 @@
     </thead>
 
     <tbody>
-        @for (int index = 0; index <= End; index++)
+        @for (int index = Begin; index <= End; index++)
         {
             var StationCode = GroupStation.GetToList[index];
             Int32 Total = 0;

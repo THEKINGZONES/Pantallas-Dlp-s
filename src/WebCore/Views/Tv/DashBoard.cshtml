@@ -1,0 +1,56 @@
+﻿@{ 
+    var LineaMax = 19;
+    LineaMax++;
+    var HrActual = DateTime.Now.Hour;
+    var MinHr = 0;
+    if (HrActual >= 06 && HrActual < 16)
+    {
+        MinHr = 6;
+
+
+    }
+    else if (HrActual >= 15 && HrActual <= 24)
+    {
+        MinHr = 15;
+
+    }
+    else
+    {
+        MinHr = 00;
+
+    }
+ }
+<h1>Validacion De Pruebas</h1>
+<table class="table table-bordered font-weight-bold">
+    <thead>
+        <tr>
+            <th style="background-color:black;color:white;text-align:center">
+              
+            </th>
+            @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+            {
+                <th style="text-align:center;background-color:cornflowerblue;color:white;text-size-adjust:250%">
+                    @Hr
+                </th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (int index = 1; index <= LineaMax; index++)
+        {
+            <tr>
+                <td style="text-align:center" >
+                    Linea @index
+                </td>
+                @for (int Hr = MinHr; Hr < HrActual+1; Hr++)
+                 {
+                <td style="background-color:green">
+                    
+                </td>
+                 }
+            </tr>
+        }
+
+    </tbody>
+</table>

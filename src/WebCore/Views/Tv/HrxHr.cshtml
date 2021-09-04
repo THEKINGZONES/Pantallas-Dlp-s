@@ -13,6 +13,7 @@
     MaxHr++;
     int Begin = 0;
     int End = 4;
+    var HrActual = DateTime.Now.Hour;
     Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
     Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
     var AuditTotal = ViewBag.SAudit as System.Data.DataTable;
@@ -20,7 +21,38 @@
     var Rework = ViewBag.Rework as System.Data.DataTable;
     var Defects = ViewBag.Defects as System.Data.DataTable;
     var Pass = ViewBag.Pass as System.Data.DataTable;
-    
+    var Day = DateTime.Today.DayOfWeek;
+
+    if (Day != DayOfWeek.Sunday && Day != DayOfWeek.Saturday)
+    {
+        if (HrActual >= 06 && HrActual < 16)
+        {
+            MinHr = 6;
+
+
+        }
+        else if (HrActual >= 15 && HrActual <= 24)
+        {
+            MinHr = 15;
+
+        }
+        else
+        {
+            MinHr = 00;
+
+        }
+    }
+    else if(HrActual >= 06 && HrActual < 18)
+    {
+        MinHr = 6;
+    }
+    else
+    {
+        MinHr = 18;
+    }
+
+
+
 
     if (Begin > GroupStation.GetToList.Count)
     {
@@ -35,7 +67,7 @@
 
 }
 
- 
+
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
 
 <table class="table table-bordered font-weight-bold">
@@ -75,7 +107,7 @@
 
 
 
-            float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0}", StationCode)).ToString(), out Total);
+            float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} and hrs>={1}", StationCode,MinHr)).ToString(), out Total);
             if (Bad != null)
             {
                 float.TryParse(Bad.Compute("Count(HrsA)", string.Format("CODE_B={0} AND HrsB >= {1}", StationCode, MinHr)).ToString(), out Tbad);
@@ -91,7 +123,7 @@
             else TRework = 0;
 
             if (Defects != null)
-            {                
+            {
                 float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr >= {1} and OrbitHr <= {2}"+" OR PraCode={0} and PraHr >= {1} and PraHr <= {2}" +
                                 "OR DlpCode={0} and DlpHr >= {1} and DlpHr <= {2}", StationCode, MinHr,MaxHr)).ToString(), out TDefects);
             }
@@ -105,7 +137,8 @@
 
             if (Total > 0)
             {
-                var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
+                
+                var StationName = Model.Select(string.Format("s_code={0}",StationCode))[0]["sub_desc"].ToString();
                 Fpy = ((Total - Tbad) / (Total)) * 100.0D;
                 <tr>
 

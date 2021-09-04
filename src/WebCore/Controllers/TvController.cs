@@ -57,14 +57,21 @@ namespace WebCore.Controllers
             }
             
         }
-        public IActionResult HrxHrByAr(string yuegp)
+        public IActionResult HrxHrByAr(string yuegp, int begin, int end)
         {
             var BeginDay = DateTime.Now;
             var EndDay = DateTime.Now;
 
-            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
-            var result = _tvBusiness.HRXHRAR(yuegp);
+            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);         
 
+            if (begin <= 0)
+                begin = 1;
+
+            ViewBag.DisplayBegin = begin - 1;
+            if (end <= 0)
+                end = 5;
+            ViewBag.DisplayEnd = end - 1;
+            var result = _tvBusiness.HRXHRAR(yuegp);
             if (result != null)
             {
                 return View(result);
@@ -74,6 +81,14 @@ namespace WebCore.Controllers
                 return RedirectToAction("BadRequest");
             }
             return View(result);
+        }
+        public IActionResult Dashboard()
+        {
+            
+            
+            
+            
+            return View();
         }
 
 

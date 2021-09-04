@@ -33,11 +33,11 @@ namespace Business
             var resultShift = _Sql.GetDataRow(queryShift);
             var YueStations = _YueConexion.GetGroupStation(GroupStation);
 
-            var query = _YueConexion.GetReport(DA.enumYueReport.P04);
+            var query = _YueConexion.GetReport(DA.enumYueReport.HRXHR);
             query = query.Replace("@Stations", YueStations.GetListString);
-           // query = query.Replace("@Day", string.Format("'{0}'", EndDay.ToString("MM-dd-yyyy")));
-            query = query.Replace("@BEGINDAY", string.Format("'{0} {1}'", BeginDay.ToString("yyyy-MM-dd"), resultShift["ShiftStart"].ToString()));
-            query = query.Replace("@ENDDAY", string.Format("'{0} {1}'", EndDay.ToString("yyyy-MM-dd"), resultShift["ShiftEnd"].ToString()));
+            query = query.Replace("@Day", string.Format("'{0}'", EndDay.ToString("MM-dd-yyyy")));
+            //query = query.Replace("@BEGINDAY", string.Format("'{0} {1}'", BeginDay.ToString("yyyy-MM-dd"), resultShift["ShiftStart"].ToString()));
+            //query = query.Replace("@ENDDAY", string.Format("'{0} {1}'", EndDay.ToString("yyyy-MM-dd"), resultShift["ShiftEnd"].ToString()));
 
             var result = _Conexion.GetDataTable(query);
             return result;
@@ -55,7 +55,14 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
         }
-        
+        //public DataTable DashBoard()
+        //{
+        //    var query = _YueConexion.GetReport(DA.enumYueReport.GETGROUP);
+
+
+        //    var Result = 
+        //    return Result;
+        //}
     }
 
 }
