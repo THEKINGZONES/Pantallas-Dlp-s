@@ -1,5 +1,4 @@
 ﻿@model System.Data.DataTable
-@using System.Linq
 @{
     Layout = "_LayoutTv";
     ViewData["Title"] = "HrxHr";
@@ -23,7 +22,7 @@
     var Pass = ViewBag.Pass as System.Data.DataTable;
     var Day = DateTime.Today.DayOfWeek;
 
-    if (Day != DayOfWeek.Sunday && Day != DayOfWeek.Saturday)
+    if (Day != DayOfWeek.Sunday || Day != DayOfWeek.Saturday)
     {
         if (HrActual >= 06 && HrActual < 16)
         {

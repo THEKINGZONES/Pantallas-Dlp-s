@@ -50,7 +50,8 @@ namespace DA
         HRXHRDECIDE,
         HRXHRDECIDEPASS,
         HRXHR,
-        HRXHRAR
+        HRXHRAR,
+        LineValidation
 
 
     }

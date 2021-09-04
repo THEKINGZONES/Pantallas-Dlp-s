@@ -84,10 +84,19 @@ namespace WebCore.Controllers
         }
         public IActionResult Dashboard()
         {
-            
-            
-            
-            
+            var result = _tvBusiness.DashBoard();
+            if (result != null)
+            {
+                var result2 = result.Copy();
+                return View(result);
+            }
+            else
+            {
+                return RedirectToAction("BadRequest");
+            }
+            return View(result);
+
+
             return View();
         }
 

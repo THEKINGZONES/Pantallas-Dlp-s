@@ -55,14 +55,13 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
         }
-        //public DataTable DashBoard()
-        //{
-        //    var query = _YueConexion.GetReport(DA.enumYueReport.GETGROUP);
-
-
-        //    var Result = 
-        //    return Result;
-        //}
+        public DataTable DashBoard()
+        {
+            
+            var query = _YueConexion.GetReport(DA.enumYueReport.LineValidation);
+            var Result = _Decide.GetDataTable(query);            
+            return Result;
+        }
     }
 
 }
