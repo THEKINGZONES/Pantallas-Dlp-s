@@ -15,7 +15,7 @@ namespace DA
         public string GetReport(enumYueReport report)
         {
             string result = "";
-            var query = string.Format("SELECT QUERY FROM REPORTS WHERE CODE = '{0}'", report.ToString());
+            var query = string.Format("SELECT QUERY FROM REPORTS WHERE CODE = '{0}' AND active=1", report.ToString());
             result = _sqlConexion.ExecuteScalar(query).ToString();
             return result;
         }
@@ -32,10 +32,8 @@ namespace DA
                 Meta = Convert.ToInt32(Dr["Meta"]),
                 Stations = Dr["Stations"].ToString()
             };
-
-
             return result;
-        }
+        }      
     }
     public enum enumYueReport
     {
@@ -51,7 +49,8 @@ namespace DA
         HRXHRDECIDEPASS,
         HRXHR,
         HRXHRAR,
-        LineValidation
+        LineValidation,
+        GETAREAGROUPS
 
 
     }

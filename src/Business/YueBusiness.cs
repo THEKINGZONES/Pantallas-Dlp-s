@@ -55,5 +55,11 @@ namespace Business
             return result;
 
         }
+        public DataTable DashBoard()
+        {
+            var query = _YueConexion.GetReport(DA.enumYueReport.LineValidation);
+            var Result = _ECO2_Log.GetDataTable(query);
+            return Result;
+        }            
     }
 }

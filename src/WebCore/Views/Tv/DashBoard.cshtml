@@ -1,30 +1,19 @@
 ﻿@model System.Data.DataTable
 @{
-    var LineaMax = 19;
+    var LineaMax = 0;
+    Int32.TryParse(Model.Compute("Max(LineaPra)","").ToString(),out LineaMax);
     LineaMax++;
     var HrActual = DateTime.Now.Hour;
-    var MinHr = 0;
     var MaxHr = 0;
-    if (HrActual >= 06 && HrActual < 16)
-
+    var MinHr = 0;
+    if (HrActual > 6 && HrActual < 15)
     {
-
-
-        var Dt = Model.Copy();
         MinHr = 6;
-
-
+        MaxHr = 16;
     }
-    else if (HrActual >= 15 && HrActual <= 24)
-    {
-        MinHr = 15;
+    
 
-    }
-    else
-    {
-        MinHr = 00;
 
-    }
 }
 <h1>Validacion De Pruebas</h1>
 <table class="table table-bordered font-weight-bold">
@@ -33,7 +22,7 @@
             <th style="background-color:black;color:white;text-align:center">
 
             </th>
-            @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+            @for (int Hr = MinHr; Hr < MaxHr; Hr++)
             {
                 <th style="text-align:center;background-color:cornflowerblue;color:white;text-size-adjust:250%">
                     @Hr
@@ -43,19 +32,91 @@
     </thead>
 
     <tbody>
-        @for (int index = 1; index <= LineaMax; index++)
+        @for (int index = 1; index < LineaMax; index++)
         {
-        <tr>
-            <td style="text-align:center">
-                Linea @index
-            </td>         
-           
-           @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
-            {
-                <td style="background-color:green">
+            <tr>
+                <td style="text-align:center">
+                    Linea @index
                 </td>
-            }
-        </tr>
+                @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                {
+                    var Mensaje = "";
+                    var sty = "background-color:white";
+                    var found = Model.Select(string.Format("PraHr={0} and LineaPra={1}", Hr, index));
+                    if (found.Count() > 0)
+                    {
+                        var found_Bad = Model.Select(string.Format("PraHr={0} and LineaPra={1} AND Result=2", Hr, index));
+                        if (found_Bad.Count() == 0)
+                        {
+                            sty = "background-color:green";
+                            Mensaje = "Pass";
+                        }
+                        else
+                        {
+                            sty = "background-color:red";
+                            Mensaje = "Fail";
+
+                        }
+                    }
+
+                    <td style="@sty">
+                        @if (found.Count() > 0)
+                        {
+                            <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}",Hr,index)">@Mensaje</a>
+                            <div class="modal" id='@string.Format("mDetail_{0}_{1}",Hr,index)' role="dialog" data-backdrop="false" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-green">
+                                            <h5 class="modal-title">Decide</h5>
+                                        </div>
+                                        <div class="modal-body" style="color:black">
+                                            <table class="table table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Traynumber</th>
+                                                        <th>Date Mesure</th>
+                                                        <th>Side</th>
+                                                        <th>Sphere</th>
+                                                        <th>Power</th>
+                                                        <th>Cylinder</th>
+                                                        <th>Axe</th>
+                                                        <th>Ticknes</th>
+                                                        <th>Pra Code</th>
+                                                        <th>Orbit Code</th>
+                                                        <th>DLP Code</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (System.Data.DataRow dr in found)
+                                                    {
+                                                    <tr>
+                                                        <td>@dr["Traynumber"]</td>
+                                                        <td>@dr["DateMesure"]</td>
+                                                        <td>@dr["Side"]</td>
+                                                        <td>@dr["Sphere"]</td>
+                                                        <td>@dr["Power"]</td>
+                                                        <td>@dr["Cylinder"]</td>
+                                                        <td>@dr["Axe"]</td>
+                                                        <td>@dr["Ticknes"]</td>
+                                                        <td>@dr["PRACode"]</td>
+                                                        <td>@dr["OrbitCode"]</td>
+                                                        <td>@dr["DLPCode"]</td>
+
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer bg-info">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                }
+            </tr>
         }
 
     </tbody>

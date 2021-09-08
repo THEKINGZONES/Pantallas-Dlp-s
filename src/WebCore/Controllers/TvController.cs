@@ -23,8 +23,12 @@ namespace WebCore.Controllers
         }    
         public IActionResult Defects()
         {
-            var result = _tvBusiness.DefectsDecide();    
-            return View(result);
+            var result = _tvBusiness.DefectsDecide();
+
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
         }
         public IActionResult HrxHr(string yuegp,string Brk,string Rw ,int begin,int end)
         {
@@ -48,13 +52,9 @@ namespace WebCore.Controllers
             ViewBag.DisplayEnd = end-1;
             var result = _tvBusiness.HrxHr(yuegp, BeginDay, EndDay);            
             if(result != null)
-            {
                 return View(result);
-            }
             else
-            {
                 return RedirectToAction("BadRequest");
-            }
             
         }
         public IActionResult HrxHrByAr(string yuegp, int begin, int end)
@@ -73,33 +73,29 @@ namespace WebCore.Controllers
             ViewBag.DisplayEnd = end - 1;
             var result = _tvBusiness.HRXHRAR(yuegp);
             if (result != null)
-            {
                 return View(result);
-            }
             else
-            {
                 return RedirectToAction("BadRequest");
-            }
-            return View(result);
+           
         }
         public IActionResult Dashboard()
         {
-            var result = _tvBusiness.DashBoard();
+            var result = _yueBusiness.DashBoard();
             if (result != null)
-            {
-                var result2 = result.Copy();
                 return View(result);
-            }
             else
-            {
                 return RedirectToAction("BadRequest");
-            }
-            return View(result);
-
-
+            
+        }
+        public IActionResult BadRequest()
+        {            
             return View();
         }
-
+        public IActionResult ValidationMachines()
+        {
+          
+            return View();
+        }
 
     }
 }
