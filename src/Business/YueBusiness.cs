@@ -24,23 +24,22 @@ namespace Business
         {
             return _YueConexion.GetGroupStation(GroupStation); 
         }
-        public DataTable YueHrxhrDecide(string estaciones)
+        public DataTable YueHrxhrDecide(string estaciones,DateTime BeginDay,DateTime EndDay)
         {
             var GrupA = _YueConexion.GetGroupStation(estaciones);
             var query = _YueConexion.GetReport(DA.enumYueReport.HRXHRDECIDE);
-            query = query.Replace("@Estaciones", GrupA.GetListString);           
+            query = query.Replace("@Estaciones", GrupA.GetListString);
+            query = query.Replace("@BeginDay", BeginDay.ToString("MM-dd-yyyy"));
+            query = query.Replace("@EndDay", EndDay.ToString("MM-dd-yyyy"));
             var result = _ECO2_Log.GetDataTable(query);            
             return result;
-        }
-        public DataTable YueHrxhrDecideTrue(string estaciones)
+        }  
+        public DataTable BrkOpti()
         {
-            var GrupA = _YueConexion.GetGroupStation(estaciones);
-            var query = _YueConexion.GetReport(DA.enumYueReport.HRXHRDECIDEPASS);
-            query = query.Replace("@Estaciones", GrupA.GetListString);
-            var result = _ECO2_Log.GetDataTable(query);
+            var query = _YueConexion.GetReport(DA.enumYueReport.BRKPANTALLAS);
+            var result = _Conexion.GetDataTable(query);      
             return result;
         }
-
 
         public DataTable GetStationsInStations(string BeginStation,string EndStation)
         {

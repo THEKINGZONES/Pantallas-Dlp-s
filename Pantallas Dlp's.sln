@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCore", "src\WebCore\WebC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DA", "src\DA\DA.csproj", "{20CCA2E9-84F2-4B72-B190-A5CB9A996427}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "src\Model\Model.csproj", "{6BC3C5E2-7D05-4269-A5C0-D27759E52E4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "src\Model\Model.csproj", "{6BC3C5E2-7D05-4269-A5C0-D27759E52E4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "src\Business\Business.csproj", "{9478DE54-5226-4432-9453-675CBDA1D441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "src\Business\Business.csproj", "{9478DE54-5226-4432-9453-675CBDA1D441}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

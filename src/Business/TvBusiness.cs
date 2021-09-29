@@ -26,7 +26,7 @@ namespace Business
             return result;
 
         }
-       public DataTable HrxHr(string GroupStation,DateTime BeginDay, DateTime EndDay)
+       public DataTable HrxHr(string GroupStation, DateTime Day)
         {
             
             var queryShift = _YueConexion.GetReport(DA.enumYueReport.GETSHIFT);
@@ -35,7 +35,7 @@ namespace Business
 
             var query = _YueConexion.GetReport(DA.enumYueReport.HRXHR);
             query = query.Replace("@Stations", YueStations.GetListString);
-            query = query.Replace("@Day", string.Format("'{0}'", EndDay.ToString("MM-dd-yyyy")));
+            query = query.Replace("@Day", string.Format("'{0}'", Day.ToString("MM-dd-yyyy")));
             //query = query.Replace("@BEGINDAY", string.Format("'{0} {1}'", BeginDay.ToString("yyyy-MM-dd"), resultShift["ShiftStart"].ToString()));
             //query = query.Replace("@ENDDAY", string.Format("'{0} {1}'", EndDay.ToString("yyyy-MM-dd"), resultShift["ShiftEnd"].ToString()));
 

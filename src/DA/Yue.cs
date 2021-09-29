@@ -50,7 +50,9 @@ namespace DA
         HRXHR,
         HRXHRAR,
         LineValidation,
-        GETAREAGROUPS
+        GETAREAGROUPS,
+        BRKPANTALLAS,
+        BRKPANTALLASHIST
 
 
     }

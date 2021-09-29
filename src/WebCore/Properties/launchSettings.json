@@ -1,6 +1,6 @@
 {
   "iisSettings": {
-    "windowsAuthentication": true,
+    "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
       "applicationUrl": "Http://Pantallas.web.local",
@@ -16,7 +16,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "!Development"
       },
       "sqlDebugging": false,
       "nativeDebugging": false,
