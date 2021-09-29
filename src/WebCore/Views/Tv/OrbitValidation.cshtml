@@ -1,0 +1,194 @@
+﻿@model System.Data.DataTable
+@{
+    var LineaMax = 20;
+    var HrActual = DateTime.Now.Hour;
+    var MaxHr = 0;
+    var MinHr = 0;
+    Int32.TryParse(Model.Compute("Max(LineaOrbit)", "").ToString(), out LineaMax);
+    Int32.TryParse(Model.Compute("Max(OrbitHr)", "").ToString(), out MaxHr);
+    Int32.TryParse(Model.Compute("Min(OrbitHr)", "").ToString(), out MinHr);
+    LineaMax++;
+    var Brk = ViewBag.Brk as System.Data.DataTable;
+}
+<a href='@Url.Action("PraValidation","tv")'
+   class="btn btn-dark">
+    Pra
+
+</a>
+<a href='@Url.Action("OrbitValidation","tv")'
+   class="btn btn-dark">
+    Orbit
+
+</a>
+<a href='@Url.Action("LaserValidation","tv")'
+   class="btn btn-dark">
+    Laser
+
+</a>
+<a href='@Url.Action("DlpValidation","tv")'
+   class="btn btn-dark">
+    Dlp
+
+</a>
+<div class="tab-pane" id="Tab_Orbit" role="tabpanel" aria-labelledby="Orbit-tab">
+    <h1>Validacion De Pruebas Orbit</h1>
+    <table class="table table-bordered font-weight-bold">
+        <thead>
+            <tr>
+                <th style="background-color:black;color:white;text-align:center">
+
+                </th>
+                @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                {
+                    <th style="text-align:center;background-color:cornflowerblue;color:white;text-size-adjust:250%">
+                        @Hr
+                    </th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int index = 1; index < LineaMax; index++)
+            {
+                <tr>
+                    <td style="text-align:center">
+                        Linea @index
+                    </td>
+                    @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                    {
+                        var Mensaje = "";
+                        var sty = "background-color:white";
+                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1}", Hr, index));
+                        var found_Brk = Brk.Select(string.Format("OrbitHr={0} and lineaorbit={1} AND (brkname = 'GRAY CENTER' OR brkname = 'POWER' OR brkname = 'TOO THICK' OR brkname = 'TOO THIN' OR " +
+                                "brkname = 'CENTER DOT' or brkname='GENERATOR MARK' or brkname='HALO' or brkname='COMMA')", Hr, index));
+                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND Result=2", Hr, index));
+                        if (found.Count() > 0 || found_Brk.Count() > 0 || found.Count() > 0)
+                        {
+                            if (found_Bad.Count() == 0 && found_Brk.Count() == 0)
+                            {
+                                sty = "background-color:green";
+                                Mensaje = "Pass";
+                            }
+                            else
+                            {
+                                sty = "background-color:red";
+                                Mensaje = "Fail";
+                            }
+                        }
+
+                        @if (found.Count() > 0 && found_Brk.Count() == 0)
+                        {
+                            <td style="@sty">
+                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje</a>
+                                <div class="modal" id='@string.Format("mDetail_{0}_{1}", Hr, index)' role="dialog" data-backdrop="false" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 70%;" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-green">
+                                                <h5 class="modal-title">Decide</h5>
+                                            </div>
+                                            <div class="modal-body" style="color:black">
+                                                <table class="table table-responsive">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Traynumber</th>
+                                                            <th>Date Mesure</th>
+                                                            <th>Side</th>
+                                                            <th>Sphere</th>
+                                                            <th>Power</th>
+                                                            <th>Cylinder</th>
+                                                            <th>Axe</th>
+                                                            <th>Ticknes</th>
+                                                            <th>Pra Name</th>
+                                                            <th>Orbit Name</th>
+                                                            <th>Laser Name</th>
+                                                            <th>DLP Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (System.Data.DataRow dr in found)
+                                                        {
+                                                            <tr>
+                                                                <td>@dr["Traynumber"]</td>
+                                                                <td>@dr["DateMesure"]</td>
+                                                                <td>@dr["Side"]</td>
+                                                                <td>@dr["Sphere"]</td>
+                                                                <td>@dr["Power"]</td>
+                                                                <td>@dr["Cylinder"]</td>
+                                                                <td>@dr["Axe"]</td>
+                                                                <td>@dr["Ticknes"]</td>
+                                                                <td>@dr["PraName"]</td>
+                                                                <td>@dr["OrbitName"]</td>
+                                                                <td>@dr["LaserName"]</td>
+                                                                <td>@dr["DlpName"]</td>
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer bg-info">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else if (found_Brk.Count() > 0)
+                        {
+                            <td style="@sty">
+
+                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje</a>
+                                <div class="modal" id='@string.Format("mDetail_{0}_{1}", Hr, index)' role="dialog" data-backdrop="false" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 70%;" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-green">
+                                                <h5 class="modal-title">Breakage</h5>
+                                            </div>
+                                            <div class="modal-body" style="color:black">
+                                                <table class="table table-responsive">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Traynumber</th>
+                                                            <th>Breakage Name</th>
+                                                            <th>Station Name</th>
+                                                            <th>Station Code</th>
+                                                            <th>Station Hour</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (System.Data.DataRow dr in found_Brk)
+                                                        {
+                                                            <tr>
+                                                                <td>@dr["brk_tray"]</td>
+                                                                <td>@dr["brkname"]</td>
+                                                                <td>@dr["orbitname"]</td>
+                                                                <td>@dr["orbitcode"]</td>
+                                                                <td>@dr["orbithr"]</td>
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer bg-info">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="@sty">
+                            </td>
+                        }
+
+                    }
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

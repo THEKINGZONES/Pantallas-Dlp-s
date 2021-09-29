@@ -101,11 +101,42 @@ namespace WebCore.Controllers
         public IActionResult BadRequest()
         {            
             return View();
-        }
-        public IActionResult ValidationMachines()
+        }     
+        public IActionResult PraValidation()
         {
-          
-            return View();
+            ViewBag.Brk = _yueBusiness.BrkOpti();
+            var result = _yueBusiness.DashBoard();
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
+        }
+        public IActionResult OrbitValidation()
+        {
+            ViewBag.Brk = _yueBusiness.BrkOpti();
+            var result = _yueBusiness.DashBoard();
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
+        }
+        public IActionResult LaserValidation()
+        {
+            ViewBag.Brk = _yueBusiness.BrkOpti();
+            var result = _yueBusiness.DashBoard();
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
+        }
+        public IActionResult DlpValidation()
+        {
+            ViewBag.Brk = _yueBusiness.BrkOpti();
+            var result = _yueBusiness.DashBoard();
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
         }
 
     }
