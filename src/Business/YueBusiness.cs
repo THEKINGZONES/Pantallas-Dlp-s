@@ -34,10 +34,13 @@ namespace Business
             var result = _ECO2_Log.GetDataTable(query);            
             return result;
         }  
-        public DataTable BrkOpti()
-        {
-            var query = _YueConexion.GetReport(DA.enumYueReport.BRKPANTALLAS);
-            var result = _Conexion.GetDataTable(query);      
+        public DataTable BrkOpti(DateTime beginDate)
+        {        
+            var EndDate = beginDate.AddDays(1);
+            var query = _YueConexion.GetReport(DA.enumYueReport.BRKPANTALLASHIST);
+            query = query.Replace("@BeginDate", beginDate.ToString("MM-dd-yyyy"));
+            query = query.Replace("@EndDate", EndDate.ToString("MM-dd-yyyy"));
+            var result = _Conexion.GetDataTable(query);             
             return result;
         }
 
@@ -54,9 +57,12 @@ namespace Business
             return result;
 
         }
-        public DataTable DashBoard()
-        {
-            var query = _YueConexion.GetReport(DA.enumYueReport.LineValidation);
+        public DataTable DashBoard(DateTime beginDate)
+        {         
+            var EndDate = beginDate.AddDays(1);
+            var query = _YueConexion.GetReport(DA.enumYueReport.LINEVALIDATIONTEST);
+            query = query.Replace("@BeginDate", beginDate.ToString("MM-dd-yyyy"));
+            query = query.Replace("@EndDate", EndDate.ToString("MM-dd-yyyy"));
             var Result = _ECO2_Log.GetDataTable(query);
             return Result;
         }            

@@ -4,12 +4,46 @@
     var HrActual = DateTime.Now.Hour;
     var MaxHr = 0;
     var MinHr = 0;
-    Int32.TryParse(Model.Compute("Max(LineaOrbit)", "").ToString(), out LineaMax);
-    Int32.TryParse(Model.Compute("Max(OrbitHr)", "").ToString(), out MaxHr);
-    Int32.TryParse(Model.Compute("Min(OrbitHr)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(LineaPra)", "").ToString(), out LineaMax);
+    Int32.TryParse(Model.Compute("Max(PraHr)", "").ToString(), out MaxHr);
+    Int32.TryParse(Model.Compute("Min(PraHr)", "").ToString(), out MinHr);
     LineaMax++;
     var Brk = ViewBag.Brk as System.Data.DataTable;
+    var Day = DateTime.Today.DayOfWeek;
+    int Days = 0;
+    //if (Days == 0)
+    //{
+    //    if (Day != DayOfWeek.Sunday || Day != DayOfWeek.Saturday)
+    //    {
+    //        if (HrActual >= 06 && HrActual < 16)
+    //        {
+    //            MinHr = 6;
+
+
+    //        }
+    //        else if (HrActual >= 15 && HrActual <= 24)
+    //        {
+    //            MinHr = 15;
+
+    //        }
+    //        else
+    //        {
+    //            MinHr = 00;
+
+    //        }
+    //    }
+    //    else if (HrActual >= 06 && HrActual < 18)
+    //    {
+    //        MinHr = 6;
+    //    }
+    //    else
+    //    {
+    //        MinHr = 18;
+    //    }
+    //}
+    //else MinHr = 0;
 }
+
 <a href='@Url.Action("PraValidation","tv")'
    class="btn btn-dark">
     Pra
@@ -30,8 +64,8 @@
     Dlp
 
 </a>
-<div class="tab-pane" id="Tab_Orbit" role="tabpanel" aria-labelledby="Orbit-tab">
-    <h1>Validacion De Pruebas Orbit</h1>
+<div class="tab-pane active" id="Tab_Pra" role="tabpanel" aria-labelledby="Pra-tab">
+    <h1>Validacion De Pruebas Pra</h1>
     <table class="table table-bordered font-weight-bold">
         <thead>
             <tr>
@@ -56,16 +90,19 @@
                     </td>
                     @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
                     {
-                        var Mensaje = "";
                         var piezas = 0;
-                        Int32.TryParse(Model.Compute("Count(Traynumber)", string.Format("LineaOrbit={0} AND OrbitHr={1}", index, Hr)).ToString(), out piezas);
+                        Int32.TryParse(Model.Compute("Count(LineaPra)", string.Format("LineaPra={0} AND PraHr={1}", index, Hr)).ToString(), out piezas);
+                        var Mensaje = "";
                         var sty = "background-color:white";
-                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1}", Hr, index));
-                        var found_Brk = Brk.Select(string.Format("OrbitHr={0} and lineaorbit={1} AND (brkname = 'GRAY CENTER' OR brkname = 'POWER' OR brkname = 'TOO THICK' OR brkname = 'TOO THIN' OR " +
-                                "brkname = 'CENTER DOT' or brkname='GENERATOR MARK' or brkname='HALO' or brkname='COMMA')", Hr, index));
-                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND Result=2", Hr, index));
-                        if (found.Count() > 0 || found_Brk.Count() > 0 || found.Count() > 0)
+                        var found = Model.Select(string.Format("PraHr={0} and LineaPra={1}", Hr, index));
+                        var found_Brk = Brk.Select(string.Format("PraHr={0} and lineapra={1} AND (brkname = 'EYE FOR EYE' OR brkname = 'AXIS LAYOUT' OR brkname = 'HORISONTAL PRISM' OR brkname = 'VERTICAL PRISM' OR " +
+                                "brkname = 'WRONG RING')", Hr, index));
+                        var found_Bad = Model.Select(string.Format("PraHr={0} and LineaPra={1} AND Result=2", Hr, index));
+
+
+                        if (found.Count() > 0 || found_Brk.Count() > 0 || found_Bad.Count() > 0)
                         {
+
                             if (found_Bad.Count() == 0 && found_Brk.Count() == 0)
                             {
                                 sty = "background-color:green";
@@ -80,8 +117,8 @@
 
                         @if (found.Count() > 0 && found_Brk.Count() == 0)
                         {
-                            <td style="@sty">
-                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje (@piezas)</a>
+                            <td style="@sty">                                
+                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje</a> 
                                 <div class="modal" id='@string.Format("mDetail_{0}_{1}", Hr, index)' role="dialog" data-backdrop="false" aria-hidden="true">
                                     <div class="modal-dialog" style="max-width: 70%;" role="document">
                                         <div class="modal-content">
@@ -164,9 +201,9 @@
                                                             <tr>
                                                                 <td>@dr["brk_tray"]</td>
                                                                 <td>@dr["brkname"]</td>
-                                                                <td>@dr["orbitname"]</td>
-                                                                <td>@dr["orbitcode"]</td>
-                                                                <td>@dr["orbithr"]</td>
+                                                                <td>@dr["praname"]</td>
+                                                                <td>@dr["pracode"]</td>
+                                                                <td>@dr["prahr"]</td>
 
                                                             </tr>
                                                         }
@@ -183,7 +220,7 @@
                         }
                         else
                         {
-                            <td style="@sty">
+                            <td>
                             </td>
                         }
 

@@ -4,33 +4,24 @@
     var HrActual = DateTime.Now.Hour;
     var MaxHr = 0;
     var MinHr = 0;
-    Int32.TryParse(Model.Compute("Max(LineaPra)", "").ToString(), out LineaMax);
-    Int32.TryParse(Model.Compute("Max(PraHr)", "").ToString(), out MaxHr);
-    Int32.TryParse(Model.Compute("Min(PraHr)", "").ToString(), out MinHr);
-    LineaMax++;
     var Brk = ViewBag.Brk as System.Data.DataTable;
+    var Day = 0;
+    Int32.TryParse(Model.Rows[0]["PraDay"].ToString(), out Day);
+    Int32.TryParse(Model.Compute("Max(LineaPra)", "").ToString(), out LineaMax);
+    Int32.TryParse(Model.Compute("Max(PraHr)", string.Format("PraDay={0}", Day)).ToString(), out MaxHr);
+    Int32.TryParse(Model.Compute("Min(PraHr)", "").ToString(), out MinHr);
+    LineaMax++;   
 }
-
-<a href='@Url.Action("PraValidation","tv")'
-   class="btn btn-dark">
-    Pra
-
-</a>
-<a href='@Url.Action("OrbitValidation","tv")'
-   class="btn btn-dark">
-    Orbit
-
-</a>
-<a href='@Url.Action("LaserValidation","tv")'
-   class="btn btn-dark">
-    Laser
-
-</a>
-<a href='@Url.Action("DlpValidation","tv")'
-   class="btn btn-dark">
-    Dlp
-
-</a>
+<form action="/tv/PraValidation" method="post">
+    <div class="form-group">
+        <h3>Fecha</h3>
+        <input name="Begin" type="date" class="form-control" value=""
+               max="@Day.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn-success">Search</button>
+    </div>
+</form>
 <div class="tab-pane active" id="Tab_Pra" role="tabpanel" aria-labelledby="Pra-tab">
     <h1>Validacion De Pruebas Pra</h1>
     <table class="table table-bordered font-weight-bold">
@@ -39,7 +30,7 @@
                 <th style="background-color:black;color:white;text-align:center">
 
                 </th>
-                @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                @for (int Hr = MinHr; Hr < MaxHr + 1; Hr++)
                 {
                     <th style="text-align:center;background-color:cornflowerblue;color:white;text-size-adjust:250%">
                         @Hr
@@ -55,14 +46,18 @@
                     <td style="text-align:center">
                         Linea @index
                     </td>
-                    @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                    @for (int Hr = MinHr; Hr < MaxHr + 1; Hr++)
                     {
+                        var piezas = 0;
+                        Int32.TryParse(Model.Compute("Count(Traynumber)", string.Format("LineaPra={0} AND PraHr={1}", index, Hr)).ToString(), out piezas);
                         var Mensaje = "";
                         var sty = "background-color:white";
-                        var found = Model.Select(string.Format("PraHr={0} and LineaPra={1}", Hr, index));
+                        var found = Model.Select(string.Format("PraHr={0} and LineaPra={1} and PraDay={2}", Hr, index, Day));
                         var found_Brk = Brk.Select(string.Format("PraHr={0} and lineapra={1} AND (brkname = 'EYE FOR EYE' OR brkname = 'AXIS LAYOUT' OR brkname = 'HORISONTAL PRISM' OR brkname = 'VERTICAL PRISM' OR " +
                                 "brkname = 'WRONG RING')", Hr, index));
-                        var found_Bad = Model.Select(string.Format("PraHr={0} and LineaPra={1} AND Result=2", Hr, index));
+                        var found_Bad = Model.Select(string.Format("PraHr={0} and LineaPra={1} AND PraDay={2} AND Result=2", Hr, index, Day));
+
+
                         if (found.Count() > 0 || found_Brk.Count() > 0 || found_Bad.Count() > 0)
                         {
 
@@ -82,7 +77,7 @@
                         {
                             <td style="@sty">
 
-                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje</a>
+                                <a data-toggle="modal" data-target="#@string.Format("mDetail_{0}_{1}", Hr, index)">@Mensaje (@(piezas))</a>
                                 <div class="modal" id='@string.Format("mDetail_{0}_{1}", Hr, index)' role="dialog" data-backdrop="false" aria-hidden="true">
                                     <div class="modal-dialog" style="max-width: 70%;" role="document">
                                         <div class="modal-content">

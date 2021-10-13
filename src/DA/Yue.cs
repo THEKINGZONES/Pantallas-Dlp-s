@@ -52,7 +52,8 @@ namespace DA
         LineValidation,
         GETAREAGROUPS,
         BRKPANTALLAS,
-        BRKPANTALLASHIST
+        BRKPANTALLASHIST,
+        LINEVALIDATIONTEST
 
 
     }

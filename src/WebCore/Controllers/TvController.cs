@@ -15,8 +15,7 @@ namespace WebCore.Controllers
         {
             _tvBusiness = new TvBusiness();
             _yueBusiness = new YueBusiness();
-        }
-
+        }        
         public IActionResult Index()
         {
             return View();
@@ -88,10 +87,14 @@ namespace WebCore.Controllers
                 return RedirectToAction("BadRequest");
            
         }
-        public IActionResult Dashboard()
+        public IActionResult Dashboard(DateTime beginDate)
         {
-            ViewBag.Brk = _yueBusiness.BrkOpti();          
-            var result = _yueBusiness.DashBoard();        
+            if(beginDate == null)
+            {
+                beginDate = DateTime.Now;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(beginDate);          
+            var result = _yueBusiness.DashBoard(beginDate);        
             if (result != null)
                 return View(result);
             else
@@ -102,42 +105,90 @@ namespace WebCore.Controllers
         {            
             return View();
         }     
+        [HttpPost]
+        public IActionResult PraValidation(DateTime begin)
+        {
+            var BeginDate = DateTime.Today;
+            if(begin > DateTime.Today.AddDays(-90))
+            {
+                BeginDate = begin;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
+            if (result != null)            
+                return View(result);              
+            else
+                return RedirectToAction("BadRequest");
+        }
+        [HttpGet]
         public IActionResult PraValidation()
         {
-            ViewBag.Brk = _yueBusiness.BrkOpti();
-            var result = _yueBusiness.DashBoard();
+            var BeginDate = DateTime.Today;            
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
             if (result != null)
                 return View(result);
             else
                 return RedirectToAction("BadRequest");
         }
-        public IActionResult OrbitValidation()
+
+        public IActionResult OrbitValidation(DateTime beginDate)
         {
-            ViewBag.Brk = _yueBusiness.BrkOpti();
-            var result = _yueBusiness.DashBoard();
+            var BeginDate = DateTime.Today;
+            if (beginDate > DateTime.Today.AddDays(-90))
+            {
+                BeginDate = beginDate;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
             if (result != null)
                 return View(result);
             else
                 return RedirectToAction("BadRequest");
         }
-        public IActionResult LaserValidation()
+        public IActionResult LaserValidation(DateTime beginDate)
         {
-            ViewBag.Brk = _yueBusiness.BrkOpti();
-            var result = _yueBusiness.DashBoard();
+            var BeginDate = DateTime.Today;
+            if (beginDate > DateTime.Today.AddDays(-90))
+            {
+                BeginDate = beginDate;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
             if (result != null)
                 return View(result);
             else
                 return RedirectToAction("BadRequest");
         }
-        public IActionResult DlpValidation()
+        public IActionResult DlpValidation(DateTime beginDate)
         {
-            ViewBag.Brk = _yueBusiness.BrkOpti();
-            var result = _yueBusiness.DashBoard();
+            var BeginDate = DateTime.Today;
+            if (beginDate > DateTime.Today.AddDays(-90))
+            {
+                BeginDate = beginDate;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
             if (result != null)
                 return View(result);
             else
                 return RedirectToAction("BadRequest");
         }
+        public IActionResult CheckListFoco(DateTime beginDate)
+        {
+            var BeginDate = DateTime.Today;
+            if (beginDate > DateTime.Today.AddDays(-90))
+            {
+                BeginDate = beginDate;
+            }
+            ViewBag.Brk = _yueBusiness.BrkOpti(BeginDate);
+            var result = _yueBusiness.DashBoard(BeginDate);
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
+        }
+
 
     }
 }
