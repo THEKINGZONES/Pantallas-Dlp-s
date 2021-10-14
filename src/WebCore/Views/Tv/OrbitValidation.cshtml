@@ -1,35 +1,28 @@
 ﻿@model System.Data.DataTable
 @{
-    var LineaMax = 20;
-    var HrActual = DateTime.Now.Hour;
+    var Brk = ViewBag.Brk as System.Data.DataTable;
+    var LineaMax = 0;
     var MaxHr = 0;
     var MinHr = 0;
+    var Day = 0;
+    var fecha = DateTime.Today;
+    DateTime.TryParse(Model.Rows[0]["DateMesure"].ToString(), out fecha);
+    Int32.TryParse(Model.Rows[0]["OrbitDay"].ToString(), out Day);
     Int32.TryParse(Model.Compute("Max(LineaOrbit)", "").ToString(), out LineaMax);
-    Int32.TryParse(Model.Compute("Max(OrbitHr)", "").ToString(), out MaxHr);
-    Int32.TryParse(Model.Compute("Min(OrbitHr)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MaxHr);
+    Int32.TryParse(Model.Compute("Min(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MinHr);
     LineaMax++;
-    var Brk = ViewBag.Brk as System.Data.DataTable;
 }
-<a href='@Url.Action("PraValidation","tv")'
-   class="btn btn-dark">
-    Pra
-
-</a>
-<a href='@Url.Action("OrbitValidation","tv")'
-   class="btn btn-dark">
-    Orbit
-
-</a>
-<a href='@Url.Action("LaserValidation","tv")'
-   class="btn btn-dark">
-    Laser
-
-</a>
-<a href='@Url.Action("DlpValidation","tv")'
-   class="btn btn-dark">
-    Dlp
-
-</a>
+<form action="/tv/OrbitValidation" method="post">
+    <div class="form-group">
+        <h3>Fecha @fecha.ToString("MM-dd-yyyy")</h3>
+        <input name="Begin" type="date" class="form-control" value=""
+               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn-dark">Search</button>
+    </div>
+</form>
 <div class="tab-pane" id="Tab_Orbit" role="tabpanel" aria-labelledby="Orbit-tab">
     <h1>Validacion De Pruebas Orbit</h1>
     <table class="table table-bordered font-weight-bold">
@@ -38,7 +31,7 @@
                 <th style="background-color:black;color:white;text-align:center">
 
                 </th>
-                @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                @for (int Hr = MinHr; Hr < MaxHr + 1; Hr++)
                 {
                     <th style="text-align:center;background-color:cornflowerblue;color:white;text-size-adjust:250%">
                         @Hr
@@ -54,16 +47,16 @@
                     <td style="text-align:center">
                         Linea @index
                     </td>
-                    @for (int Hr = MinHr; Hr < HrActual + 1; Hr++)
+                    @for (int Hr = MinHr; Hr < MaxHr + 1; Hr++)
                     {
                         var Mensaje = "";
                         var piezas = 0;
-                        Int32.TryParse(Model.Compute("Count(Traynumber)", string.Format("LineaOrbit={0} AND OrbitHr={1}", index, Hr)).ToString(), out piezas);
                         var sty = "background-color:white";
-                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1}", Hr, index));
+                        Int32.TryParse(Model.Compute("Count(Traynumber)", string.Format("LineaOrbit={0} AND OrbitHr={1}", index, Hr)).ToString(), out piezas);
+                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} and OrbitDay={2}", Hr, index,Day));
                         var found_Brk = Brk.Select(string.Format("OrbitHr={0} and lineaorbit={1} AND (brkname = 'GRAY CENTER' OR brkname = 'POWER' OR brkname = 'TOO THICK' OR brkname = 'TOO THIN' OR " +
                                 "brkname = 'CENTER DOT' or brkname='GENERATOR MARK' or brkname='HALO' or brkname='COMMA')", Hr, index));
-                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND Result=2", Hr, index));
+                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND OrbitDay={2} AND Result=2", Hr, index,Day));
                         if (found.Count() > 0 || found_Brk.Count() > 0 || found.Count() > 0)
                         {
                             if (found_Bad.Count() == 0 && found_Brk.Count() == 0)
