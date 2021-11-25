@@ -190,7 +190,25 @@ namespace WebCore.Controllers
             else
                 return RedirectToAction("BadRequest");
         }
+        public IActionResult HrxHrCoating(string yuegp,int begin, int end)
+        {
+            var BeginDay = DateTime.Now;
+            var EndDay = DateTime.Today;           
+                     
+            ViewBag.GroupStation = _yueBusiness.GetYueGroupStation(yuegp);
+            if (begin <= 0)
+                begin = 1;
+            ViewBag.DisplayBegin = begin - 1;
+            if (end <= 0)
+                end = 5;
+            ViewBag.DisplayEnd = end - 1;
+            var result = _tvBusiness.HrxHr(yuegp, BeginDay);
+            if (result != null)
+                return View(result);
+            else
+                return RedirectToAction("BadRequest");
 
+        }
 
     }
 }

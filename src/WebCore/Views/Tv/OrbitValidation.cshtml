@@ -6,8 +6,8 @@
     var MinHr = 0;
     var Day = 0;
     var fecha = DateTime.Today;
-    DateTime.TryParse(Model.Rows[0]["DateMesure"].ToString(), out fecha);
-    Int32.TryParse(Model.Rows[0]["OrbitDay"].ToString(), out Day);
+    DateTime.TryParse(Model.Rows[5]["DateMesure"].ToString(), out fecha);
+    Int32.TryParse(Model.Rows[5]["OrbitDay"].ToString(), out Day);
     Int32.TryParse(Model.Compute("Max(LineaOrbit)", "").ToString(), out LineaMax);
     Int32.TryParse(Model.Compute("Max(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MaxHr);
     Int32.TryParse(Model.Compute("Min(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MinHr);

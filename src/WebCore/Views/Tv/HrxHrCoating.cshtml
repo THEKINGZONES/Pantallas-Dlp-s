@@ -1,0 +1,202 @@
+﻿@model System.Data.DataTable
+@{
+    Layout = "_LayoutTv";
+    ViewData["Title"] = "HrxHr";
+    var MinHr = 0;
+    var MaxHr = 0;
+    Int32.TryParse(Model.Compute("Min(hrs)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(hrs)", "").ToString(), out MaxHr);
+    Double Resultado = 0;
+    var Semaforo = "";
+    var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
+    MaxHr++;
+    int Begin = 0;
+    int End = 4;
+    var HrActual = DateTime.Now.Hour;
+    Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
+    Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
+    var Day = DateTime.Today.DayOfWeek;
+    int Days = 0;
+    //Int32.TryParse(ViewBag.Day.ToString(), out Days);
+    if (Days == 0)
+    {
+        if (Day != DayOfWeek.Sunday || Day != DayOfWeek.Saturday)
+        {
+            if (HrActual >= 06 && HrActual < 16)
+            {
+                MinHr = 6;
+
+
+            }
+            else if (HrActual >= 15 && HrActual <= 24)
+            {
+                MinHr = 15;
+
+            }
+            else
+            {
+                MinHr = 00;
+
+            }
+        }
+        else if (HrActual >= 06 && HrActual < 18)
+        {
+            MinHr = 6;
+        }
+        else
+        {
+            MinHr = 18;
+        }
+    }
+    else MinHr = 0;
+
+    if (Begin > GroupStation.GetToList.Count)
+    {
+        Begin = GroupStation.GetToList.Count - 5;
+
+    }
+    if (End > GroupStation.GetToList.Count)
+    {
+        End = GroupStation.GetToList.Count - 1;
+
+    }
+
+}
+
+<h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+
+<table class="table table-bordered font-weight-bold">
+    <thead>
+        <tr>
+            <th>
+                Estaciones
+            </th>
+            <th>
+
+            </th>
+            @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+            {
+                <th style="text-align:center;text-size-adjust:250%">
+                    @Hr
+                </th>
+            }
+            <th>
+                total
+            </th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (int index = Begin; index <= End; index++)
+
+
+
+        {
+            var StationCode = GroupStation.GetToList[index];
+            var Total = 0.0F;
+
+
+
+            if (Model != null)
+            {
+                float.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} and hrs>={1}", StationCode,MinHr)).ToString(), out Total);
+            }
+
+
+            if (Total > 0)
+            {
+                var StationName = Model.Select(string.Format("s_code={0}", StationCode))[0]["sub_desc"].ToString();
+                <tr>
+
+
+                    <td style="width:150px;font-size:45px">
+
+                        @StationName
+
+                    </td>
+                    <td style="width:80px">
+                        Qty
+                    </td>
+                    @for (int Hr = MinHr; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(COUNT)", string.Format("s_code={0} AND Hrs = {1}", StationCode, Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+                        if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+
+
+
+
+                        <th class="@Semaforo" style="text-align:center;font-size:70px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:70px">
+                        @Total.ToString("N0")
+                    </th>
+
+
+                </tr>
+
+
+
+
+
+
+
+            }
+
+
+        }
+    </tbody>
+</table>
+<style>
+    .StatusFontRed {
+        font-weight: bold;
+        color: red;
+    }
+
+    .StatusFontYellow {
+        font-weight: bold;
+        color: goldenrod;
+    }
+
+    .StatusFontGreen {
+        font-weight: bold;
+        color: green;
+    }
+
+    .StatusRed, .StatusYellow, .StatusGreen {
+        font-weight: bold;
+        color: white;
+    }
+
+    .StatusRed {
+        background-color: red;
+    }
+
+    .StatusYellow {
+        background-color: goldenrod;
+    }
+
+    .StatusGreen {
+        background-color: green;
+    }
+
+    .StatusZero {
+        color: white;
+    }
+</style>
