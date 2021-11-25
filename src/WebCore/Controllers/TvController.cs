@@ -209,6 +209,13 @@ namespace WebCore.Controllers
                 return RedirectToAction("BadRequest");
 
         }
+        public IActionResult LeadtimeSurfacing()
+        {
+            var BeginDay = DateTime.Now;
+            var EndDay = DateTime.Today.AddDays(1);
+            var result = _tvBusiness.LeadTimeSurfacing();
+            return View(result);
+        }
 
     }
 }
