@@ -53,8 +53,8 @@ namespace DA
         GETAREAGROUPS,
         BRKPANTALLAS,
         BRKPANTALLASHIST,
-        LINEVALIDATIONTEST,
-        REPORTLEADTIME
+        LINEVALIDATIONTEST
+        
 
 
     }

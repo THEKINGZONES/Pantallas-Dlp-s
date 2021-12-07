@@ -4,15 +4,18 @@
     var LineaMax = 0;
     var MaxHr = 0;
     var MinHr = 0;
-    var Day = 0;
+    //var Day = 0;
     var fecha = DateTime.Today;
     DateTime.TryParse(Model.Rows[5]["DateMesure"].ToString(), out fecha);
-    Int32.TryParse(Model.Rows[5]["OrbitDay"].ToString(), out Day);
+    // Int32.TryParse(Model.Rows[10]["OrbitDay"].ToString(), out Day);
     Int32.TryParse(Model.Compute("Max(LineaOrbit)", "").ToString(), out LineaMax);
-    Int32.TryParse(Model.Compute("Max(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MaxHr);
-    Int32.TryParse(Model.Compute("Min(OrbitHr)", string.Format("OrbitDay={0}", Day)).ToString(), out MinHr);
+    MaxHr = DateTime.Now.Hour;   
     LineaMax++;
-}
+    if (fecha < DateTime.Today)    
+        MaxHr = 23;
+        MinHr = 0;  
+  }
+
 <form action="/tv/OrbitValidation" method="post">
     <div class="form-group">
         <h3>Fecha @fecha.ToString("MM-dd-yyyy")</h3>
@@ -53,10 +56,10 @@
                         var piezas = 0;
                         var sty = "background-color:white";
                         Int32.TryParse(Model.Compute("Count(Traynumber)", string.Format("LineaOrbit={0} AND OrbitHr={1}", index, Hr)).ToString(), out piezas);
-                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} and OrbitDay={2}", Hr, index,Day));
+                        var found = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1}", Hr, index));
                         var found_Brk = Brk.Select(string.Format("OrbitHr={0} and lineaorbit={1} AND (brkname = 'GRAY CENTER' OR brkname = 'POWER' OR brkname = 'TOO THICK' OR brkname = 'TOO THIN' OR " +
                                 "brkname = 'CENTER DOT' or brkname='GENERATOR MARK' or brkname='HALO' or brkname='COMMA')", Hr, index));
-                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND OrbitDay={2} AND Result=2", Hr, index,Day));
+                        var found_Bad = Model.Select(string.Format("OrbitHr={0} and LineaOrbit={1} AND Result=2", Hr, index));
                         if (found.Count() > 0 || found_Brk.Count() > 0 || found.Count() > 0)
                         {
                             if (found_Bad.Count() == 0 && found_Brk.Count() == 0)
