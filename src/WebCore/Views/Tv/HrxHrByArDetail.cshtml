@@ -1,0 +1,445 @@
+﻿@model System.Data.DataTable
+@{
+    Layout = "_LayoutTv";
+    ViewData["Title"] = "HrxHr";
+    var MinHr = 0;
+    var MaxHr = 0;
+    Int32.TryParse(Model.Compute("Min(hr)", "").ToString(), out MinHr);
+    Int32.TryParse(Model.Compute("Max(hr)", "").ToString(), out MaxHr);
+    Double Resultado = 0;
+    var Semaforo = "";
+    var GroupStation = ViewBag.GroupStation as Model.YueGroupStation;
+    MaxHr++;
+    int Begin = 0;
+    int End = 0;
+    //Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
+    //Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
+    var HrActual = DateTime.Now.Hour;
+
+
+
+
+    //if (Begin > GroupStation.GetToList.Count)
+    //{
+    //    Begin = GroupStation.GetToList.Count - 5;
+
+    //}
+    //if (End > GroupStation.GetToList.Count)
+    //{
+    //    End = GroupStation.GetToList.Count - 2;
+
+    //}
+
+}
+
+
+<h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+
+<table class="table table-bordered font-weight-bold">
+    <thead>
+
+        <tr>
+
+            <th>
+
+                Estacion
+            </th>
+            <th>
+
+            </th>
+            @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+            {
+                <th style="text-align:center;text-size-adjust:250%">
+                    @Hr
+                </th>
+            }
+            <th>
+                Total
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (int index = Begin; index <= End; index++)
+        {
+            var StationCode = GroupStation.GetToList[index];
+            Int32 TotalEsy, TotalSdn, TotalAlz, TotalPre, TotalAva, TotalTd2, TotalSun, TotalRgr, TotalSaf, TotalShv = 0;
+
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'ESY' AND hr >= {0}", HrActual - 9)).ToString(), out TotalEsy);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'SDN' AND hr >= {0}", HrActual - 9)).ToString(), out TotalSdn);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'ALZ' AND hr >= {0}", HrActual - 9)).ToString(), out TotalAlz);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'PRE' AND hr >= {0}", HrActual - 9)).ToString(), out TotalPre);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'AVA' AND hr >= {0}", HrActual - 9)).ToString(), out TotalAva);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'SUN' AND hr >= {0}", HrActual - 9)).ToString(), out TotalSun);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'RGR' AND hr >= {0}", HrActual - 9)).ToString(), out TotalRgr);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'SAF' AND hr >= {0}", HrActual - 9)).ToString(), out TotalSaf);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'SHV' AND hr >= {0}", HrActual - 9)).ToString(), out TotalShv);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'TD2' AND hr >= {0}", HrActual - 9)).ToString(), out TotalTd2);
+            if (TotalEsy > 0)
+            {
+                var StationName = "ESY";
+                <tr>
+                    <td style="width:200px;font-size:30px">
+
+                        @StationName
+
+                    </td>
+                    <td style="width:60px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'ESY')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+                        if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalEsy.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalSdn > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        SDN
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'SDN')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalSdn.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalAlz > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        ALZ
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'ALZ')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalAlz.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalPre > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        PRE
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'PRE')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalPre.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalAva > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        AVA
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'AVA')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalAva.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalSun > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        SUN
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'SUN')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalSun.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalRgr > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        RGR
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'RGR')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalRgr.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalSaf > 0)
+            {
+                <tr>
+                    <td style="width:200px;font-size:40px">
+
+                        SAF
+
+                    </td>
+                    <td style="width:70px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'SAF')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0; if (Resultado < 85)
+                        {
+                            Semaforo = "StatusFontRed";
+                        }
+                        else if (Resultado >= 85 & Resultado < 100)
+                        {
+                            Semaforo = "StatusFontYellow";
+                        }
+                        else
+                        {
+                            Semaforo = "StatusFontGreen";
+                        }
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:40px;width:120px">
+                        @TotalSaf.ToString("N0")
+                    </th>
+                </tr>
+            }
+            if (TotalTd2 > 0)
+            {
+
+                <tr>
+                    <td style="width:250px;font-size:40px">
+
+                        TD2
+
+                    </td>
+                    <td style="width:80px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'TD2')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+
+                        Semaforo = "StatusFontBlack";
+
+                        <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:60px;width:150px">
+                        @TotalTd2.ToString("N0")
+                    </th>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+
+<style>
+    .StatusFontRed {
+        font-weight: bold;
+        color: red;
+    }
+
+    .StatusFontYellow {
+        font-weight: bold;
+        color: goldenrod;
+    }
+
+    .StatusFontGreen {
+        font-weight: bold;
+        color: green;
+    }
+
+    StatusFontBlack {
+        font-weight: bold;
+        color: black;
+    }
+
+    .StatusRed, .StatusYellow, .StatusGreen {
+        font-weight: bold;
+        color: white;
+    }
+
+    .StatusRed {
+        background-color: red;
+    }
+
+    .StatusYellow {
+        background-color: goldenrod;
+    }
+
+    .StatusGreen {
+        background-color: green;
+    }
+
+    .StatusZero {
+        color: white;
+    }
+</style>

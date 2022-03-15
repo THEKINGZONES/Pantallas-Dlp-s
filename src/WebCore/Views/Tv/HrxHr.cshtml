@@ -19,9 +19,10 @@
     var Bad = ViewBag.Bad as System.Data.DataTable;
     var Rework = ViewBag.Rework as System.Data.DataTable;
     var Defects = ViewBag.Defects as System.Data.DataTable;
-    var Day = DateTime.Today.DayOfWeek;
+    var Day = DateTime.Today.DayOfWeek;  
     int Days = 0;
     Int32.TryParse(ViewBag.Day.ToString(), out Days);
+    
     if (Days == 0)
     {
         if (Day != DayOfWeek.Sunday || Day != DayOfWeek.Saturday)
@@ -29,8 +30,6 @@
             if (HrActual >= 06 && HrActual < 16)
             {
                 MinHr = 6;
-
-
             }
             else if (HrActual >= 15 && HrActual <= 24)
             {
@@ -179,7 +178,7 @@
 
                         var CBad = 0;
                         var CRework = 0;
-                        var CDefects = 0;
+                        var CDefects = 0;                        
                         if (Bad != null)
                             Int32.TryParse(Bad.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CBad);
                         else CBad = 0;

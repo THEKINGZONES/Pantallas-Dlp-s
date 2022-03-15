@@ -9,8 +9,8 @@
     DateTime.TryParse(Model.Rows[0]["DateMesure"].ToString(), out fecha);
     //Int32.TryParse(Model.Rows[10]["DlpDay"].ToString(), out Day);
     Int32.TryParse(Model.Compute("Max(LineaDlp)", "").ToString(), out LineaMax);
-    MaxHr = DateTime.Now.Hour;
     Int32.TryParse(Model.Compute("Min(DlpHr)", "").ToString(), out MinHr);
+    MaxHr = DateTime.Now.Hour;
     LineaMax++;
     if (fecha < DateTime.Today)
     MaxHr = 23;

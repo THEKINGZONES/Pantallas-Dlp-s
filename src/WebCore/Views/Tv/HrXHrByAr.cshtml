@@ -26,7 +26,7 @@
     }
     if (End > GroupStation.GetToList.Count)
     {
-        End = GroupStation.GetToList.Count - 1;
+        End = GroupStation.GetToList.Count - 2;
 
     }
 
@@ -47,7 +47,7 @@
             <th>
                 
             </th>
-            @for (int Hr =HrActual-2; Hr < MaxHr; Hr++)
+            @for (int Hr =HrActual-9; Hr < MaxHr; Hr++)
             {               
                 <th style="text-align:center;text-size-adjust:250%">
                     @Hr
@@ -64,10 +64,13 @@
         {
             var StationCode = GroupStation.GetToList[index];
             Int32 Total = 0;
-            Int32.TryParse(Model.Compute("sum(total)", string.Format("stationcode = {0} ", StationCode)).ToString(), out Total);
+            Int32 TotalTd2 = 0;
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
+                "OR code= 'SHV'")).ToString(), out Total);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'TD2'")).ToString(), out TotalTd2);
             if (Total > 0)
             {
-                var StationName = Model.Select(string.Format("stationcode={0}", StationCode))[0]["stationname"].ToString();                
+                var StationName = "AR";
                 <tr>
                     <td style="width:250px;font-size:40px">
 
@@ -77,10 +80,11 @@
                     <td style="width:80px">
                         Qty
                     </td>
-                    @for (int Hr = HrActual-2; Hr < MaxHr; Hr++)
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
                     {
                         var Qty = 0;
-                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("stationcode={0} AND hr = {1}", StationCode, Hr)).ToString(), out Qty);
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
+                "OR code= 'SHV')", Hr)).ToString(), out Qty);
                         Resultado = Qty / GroupStation.Meta * 100.0;
                         if (Resultado < 85)
                         {
@@ -95,23 +99,51 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-
-
-
-
                         <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
                             @Qty.ToString("N0")
                         </th>
                     }
                     <th style="text-align:center;font-size:60px;width:150px">
                         @Total.ToString("N0")
-                    </th>                  
+                    </th>
 
                 </tr>
-                              
+
+            }
+            if (Total > 0)
+            {
+                
+                <tr>
+                    <td style="width:250px;font-size:40px">
+
+                        TD2
+
+                    </td>
+                    <td style="width:80px">
+                        Qty
+                    </td>
+                    @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
+                    {
+                        var Qty = 0;
+                        Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'TD2')", Hr)).ToString(), out Qty);
+                        Resultado = Qty / GroupStation.Meta * 100.0;
+                       
+                            Semaforo = "StatusFontBlack";
+                        
+                        <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
+                            @Qty.ToString("N0")
+                        </th>
+                    }
+                    <th style="text-align:center;font-size:60px;width:150px">
+                        @TotalTd2.ToString("N0")
+                    </th>
+
+                </tr>
+
 
 
             }
+
         }
     </tbody>
 </table>

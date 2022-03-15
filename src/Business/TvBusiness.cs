@@ -47,7 +47,7 @@ namespace Business
         {
             var YueStations = _YueConexion.GetGroupStation(GroupStation);
 
-            var query = _YueConexion.GetReport(DA.enumYueReport.HRXHRAR);
+            var query = _YueConexion.GetReport(DA.enumYueReport.REPORTTEST);
             query = query.Replace("@Stations", YueStations.GetListString);          
 
 
@@ -55,6 +55,7 @@ namespace Business
             var result = _Conexion.GetDataTable(query);
             return result;
         }       
+
        
     }
     
