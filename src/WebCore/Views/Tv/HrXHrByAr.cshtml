@@ -65,9 +65,9 @@
             var StationCode = GroupStation.GetToList[index];
             Int32 Total = 0;
             Int32 TotalTd2 = 0;
-            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
-                "OR code= 'SHV'")).ToString(), out Total);
-            Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'TD2'")).ToString(), out TotalTd2);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr >= {0} AND (code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
+                "OR code= 'SHV' OR code= 'PRO' OR code= 'SHN' OR code= 'NEW' OR code= 'SHR' OR code= 'MCL' OR code= 'MC3')", HrActual - 9)).ToString(), out Total);
+            Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr >= {0} and code = 'TD2'",HrActual - 9)).ToString(), out TotalTd2);
             if (Total > 0)
             {
                 var StationName = "AR";
@@ -84,7 +84,7 @@
                     {
                         var Qty = 0;
                         Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr = {0} AND (code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
-                "OR code= 'SHV')", Hr)).ToString(), out Qty);
+                "OR code= 'SHV' OR code= 'PRO' OR code= 'SHN' OR code= 'NEW' OR code= 'SHR' OR code= 'MCL' OR code= 'MC3')", Hr)).ToString(), out Qty);
                         Resultado = Qty / GroupStation.Meta * 100.0;
                         if (Resultado < 85)
                         {

@@ -117,8 +117,7 @@
             else TRework = 0;
             if (Defects != null)            
                 float.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr >= {1} and OrbitHr <= {2} AND Result=2"+
-                    " OR PraCode={0} and PraHr >= {1} and PraHr <= {2} AND Result=2" +
-                                "OR DlpCode={0} and DlpHr >= {1} and DlpHr <= {2} AND Result=2", StationCode, MinHr,MaxHr)).ToString(), out TDefects);            
+                    " OR PraCode={0} and PraHr >= {1} and PraHr <= {2} AND Result=2", StationCode, MinHr,MaxHr)).ToString(), out TDefects);            
             else TDefects = 0;            
                 Tbad = Tbad + TRework + TDefects;         
             if (Total > 0)
@@ -186,8 +185,7 @@
                             Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
                         else CRework = 0;
                         if (Defects != null)
-                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} and Result = 2 OR PraCode={0} and PraHr = {1} and Result=2" +
-                                "OR DlpCode={0} and DlpHr = {1} and Result=2", StationCode, Hr)).ToString(), out CDefects);
+                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} and Result = 2 OR PraCode={0} and PraHr = {1} and Result=2", StationCode, Hr)).ToString(), out CDefects);
                         else CDefects = 0;
                             CBad = CBad + CRework + CDefects;
 
@@ -234,8 +232,7 @@
                             Int32.TryParse(Rework.Compute("COUNT(HrsA)", string.Format("CODE_B={0} AND HRSB = {1}", StationCode, Hr)).ToString(), out CRework);
                         else CRework = 0;
                         if (Defects != null)
-                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} and Result=2 OR PraCode={0} and PraHr = {1} and Result=2" +
-                                "OR DlpCode={0} and DlpHr = {1} and Result=2", StationCode, Hr)).ToString(), out CDefects);
+                            Int32.TryParse(Defects.Compute("Count(OrbitHr)", string.Format("OrbitCode={0} and OrbitHr = {1} and Result=2 OR PraCode={0} and PraHr = {1} and Result=2", StationCode, Hr)).ToString(), out CDefects);
                         else CDefects = 0;
 
 
