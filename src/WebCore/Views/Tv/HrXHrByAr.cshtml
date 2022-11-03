@@ -62,11 +62,11 @@
     <tbody>
         @for (int index = Begin; index <= End; index++)
         {
-            var StationCode = GroupStation.GetToList[index];
+            var StationCode = GroupStation.GetToList[index];            
             Int32 Total = 0;
             Int32 TotalTd2 = 0;
             Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr >= {0} AND (code = 'ESY' OR code = 'SDN' OR code = 'ALZ' OR code = 'PRE' OR code = 'AVA' OR code = 'SUN' OR code = 'RGR' OR code= 'SAF'" +
-                "OR code= 'SHV' OR code= 'PRO' OR code= 'SHN' OR code= 'NEW' OR code= 'SHR' OR code= 'MCL' OR code= 'MC3')", HrActual - 9)).ToString(), out Total);
+                "OR code= 'SHV' OR code= 'PRO' OR code= 'SHN' OR code= 'NEW' OR code= 'SHR' OR code= 'MCL' OR code= 'MC3' OR code= 'TRI')", HrActual - 9)).ToString(), out Total);
             Int32.TryParse(Model.Compute("Sum(total)", string.Format("hr >= {0} and code = 'TD2'",HrActual - 9)).ToString(), out TotalTd2);
             if (Total > 0)
             {

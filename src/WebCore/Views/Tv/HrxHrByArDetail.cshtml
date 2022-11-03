@@ -33,16 +33,13 @@
 }
 
 
-<h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
+@*<h4>HrxHr @GroupStation.Name</h4>*@
 
 <table class="table table-bordered font-weight-bold">
     <thead>
-
         <tr>
-
             <th>
-
-                Estacion
+                Reflexion
             </th>
             <th>
 
@@ -62,9 +59,14 @@
     <tbody>
         @for (int index = Begin; index <= End; index++)
         {
+            var FontSizeTitle = "25px";
+            var Total = "25px";
+            var FontSizeQty = "25px";
             var StationCode = GroupStation.GetToList[index];
             Int32 TotalEsy, TotalSdn, TotalAlz, TotalPre, TotalAva, TotalTd2, TotalSun, TotalRgr, TotalSaf, TotalShv, TotalMc3, TotalMcl,
                 TotalNew, TotalPro, TotalShn, TotalShr, TotalTri = 0;
+
+        @*AQUI TENGO UN CAGADERO QUE TENGO QUE OPTIMIZAR PORQUE SON MUCHAS LINEAS DE CODIGO PARA LO MISMO*@
 
             Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'ESY' AND hr >= {0}", HrActual - 9)).ToString(), out TotalEsy);
             Int32.TryParse(Model.Compute("Sum(total)", string.Format("code = 'SDN' AND hr >= {0}", HrActual - 9)).ToString(), out TotalSdn);
@@ -90,12 +92,12 @@
             {
                 var StationName = "ESY";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
                     </td>
-                    <td style="width:60px">
+                    <td style="width:40px">
                         Qty
                     </td>
                     @for (int Hr = HrActual - 9; Hr < MaxHr; Hr++)
@@ -116,11 +118,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalEsy.ToString("N0")
                     </th>
                 </tr>
@@ -128,7 +130,7 @@
             if (TotalSdn > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         SDN
 
@@ -152,11 +154,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalSdn.ToString("N0")
                     </th>
                 </tr>
@@ -164,7 +166,7 @@
             if (TotalAlz > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         ALZ
 
@@ -188,11 +190,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalAlz.ToString("N0")
                     </th>
                 </tr>
@@ -200,7 +202,7 @@
             if (TotalPre > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         PRE
 
@@ -224,11 +226,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalPre.ToString("N0")
                     </th>
                 </tr>
@@ -236,7 +238,7 @@
             if (TotalAva > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         AVA
 
@@ -260,11 +262,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalAva.ToString("N0")
                     </th>
                 </tr>
@@ -272,7 +274,7 @@
             if (TotalSun > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         SUN
 
@@ -296,11 +298,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalSun.ToString("N0")
                     </th>
                 </tr>
@@ -308,7 +310,7 @@
             if (TotalRgr > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         RGR
 
@@ -332,11 +334,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalRgr.ToString("N0")
                     </th>
                 </tr>
@@ -344,7 +346,7 @@
             if (TotalSaf > 0)
             {
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         SAF
 
@@ -368,21 +370,20 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalSaf.ToString("N0")
                     </th>
                 </tr>
             }
-
             if (TotalMc3 > 0)
             {
                 var StationName = "MC3";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -408,11 +409,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalMc3.ToString("N0")
                     </th>
                 </tr>
@@ -421,7 +422,7 @@
             {
                 var StationName = "PRO";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -447,11 +448,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalPro.ToString("N0")
                     </th>
                 </tr>
@@ -460,7 +461,7 @@
             {
                 var StationName = "SHN";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -486,11 +487,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalShn.ToString("N0")
                     </th>
                 </tr>
@@ -499,7 +500,7 @@
             {
                 var StationName = "NEW";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -525,11 +526,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalNew.ToString("N0")
                     </th>
                 </tr>
@@ -538,7 +539,7 @@
             {
                 var StationName = "SHR";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -564,11 +565,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalShr.ToString("N0")
                     </th>
                 </tr>
@@ -577,7 +578,7 @@
             {
                 var StationName = "MCL";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -603,11 +604,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalMcl.ToString("N0")
                     </th>
                 </tr>
@@ -616,7 +617,7 @@
             {
                 var StationName = "TRI";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -642,11 +643,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalTri.ToString("N0")
                     </th>
                 </tr>
@@ -655,7 +656,7 @@
             {
                 var StationName = "SHV";
                 <tr>
-                    <td style="width:200px;font-size:40px">
+                    <td style="width:150px;font-size:@FontSizeTitle">
 
                         @StationName
 
@@ -681,11 +682,11 @@
                         {
                             Semaforo = "StatusFontGreen";
                         }
-                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:120px">
+                        <th class="@Semaforo" style="text-align:center;font-size:@FontSizeQty;width:100px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:40px;width:120px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalShv.ToString("N0")
                     </th>
                 </tr>
@@ -694,7 +695,7 @@
             {
 
                 <tr>
-                    <td style="width:250px;font-size:40px">
+                    <td style="width:250px;font-size:@FontSizeTitle">
 
                         TD2
 
@@ -710,17 +711,15 @@
 
                         Semaforo = "StatusFontBlack";
 
-                        <th class="@Semaforo" style="text-align:center;font-size:60px;width:150px">
+                        <th class="@Semaforo" style="text-align:center;font-size:40px;width:150px">
                             @Qty.ToString("N0")
                         </th>
                     }
-                    <th style="text-align:center;font-size:60px;width:150px">
+                    <th style="text-align:center;font-size:@Total;width:100px">
                         @TotalTd2.ToString("N0")
                     </th>
                 </tr>
             }
-
-
         }
     </tbody>
 </table>
