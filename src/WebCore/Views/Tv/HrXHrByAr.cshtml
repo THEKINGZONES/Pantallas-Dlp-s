@@ -15,9 +15,6 @@
     Int32.TryParse(ViewBag.DisplayBegin.ToString(), out Begin);
     Int32.TryParse(ViewBag.DisplayEnd.ToString(), out End);
     var HrActual = DateTime.Now.Hour;
-   
-
-
 
     if (Begin > GroupStation.GetToList.Count)
     {
@@ -29,12 +26,9 @@
         End = GroupStation.GetToList.Count - 2;
 
     }
-
 }
 
-
 <h1>HrxHr @GroupStation.Name (Meta @GroupStation.Meta x Hr)</h1>
-
 <table class="table table-bordered font-weight-bold">
     <thead>
 
